@@ -15,6 +15,8 @@ RUN npm run build
 
 WORKDIR dist
 
+ENV PORT 8081
+
 CMD ["node", "index.js"]
 
 
