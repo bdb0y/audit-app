@@ -127,6 +127,19 @@
         } else {
             // show_more_visible = false;
         }
+
+        subject_on_create = {
+            topicId: '',
+            unitId,
+            personnelId,
+            title: '',
+            description: '',
+            progress: 0,
+            weight: 0,
+            normalWeight: 0
+        };
+
+        // on_new_subject = false;
     }
 
     async function modifySubject() {
@@ -156,6 +169,8 @@
         } else {
             // show_more_visible = false;
         }
+
+        on_modify_subject = false;
     }
 
     import {page} from '$app/stores';
@@ -193,6 +208,8 @@
         } else {
             // show_more_visible = false;
         }
+
+        on_modify_topic = false;
     }
 
 

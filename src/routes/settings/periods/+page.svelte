@@ -91,6 +91,12 @@
         } else {
             // show_more_visible = false;
         }
+
+        period_on_create = {
+            title: '',
+            fromDate: '',
+            toDate: ''
+        };
     }
 
     import {cleave} from 'svelte-cleavejs'

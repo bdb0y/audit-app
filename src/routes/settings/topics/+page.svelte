@@ -88,6 +88,12 @@
         } else {
             // show_more_visible = false;
         }
+
+        topic_on_create = {
+            title: '',
+            description: '',
+            period: ''
+        };
     }
 
 </script>
