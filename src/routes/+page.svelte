@@ -129,8 +129,8 @@
         }
 
         subject_on_create = {
-            topicId: '',
-            unitId,
+            topicId: subject_on_create.topicId,
+            unitId: subject_on_create.unitId,
             personnelId,
             title: '',
             description: '',
@@ -210,6 +210,29 @@
         }
 
         on_modify_topic = false;
+    }
+
+    async function removeSubject(subjectId) {
+        console.log(JSON.stringify(subject_on_create));
+
+        const form_body = new FormData();
+        form_body.append('subjectId', subjectId);
+
+        const req = await fetch(`${END_POINT}/api/subject/delete_subject`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            subjects = await getTopicSubjects();
+            console.log(subjects);
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
     }
 
 
@@ -466,7 +489,8 @@
                                         <p class="text-gray-800 text-justify leading-6 text-xs">
                                             {subject_item.description}
                                         </p>
-                                        <button on:click={() => {
+                                        <div class="flex flex-row gap-2">
+                                            <button on:click={() => {
                                             on_modify_subject = true;
                                             on_new_subject = false;
                                             subject_on_modify.id = subject_item.id;
@@ -477,9 +501,16 @@
                                             subject_on_modify.description = subject_item.description;
                                             subject_on_modify.progress = subject_item.progress;
                                         }}
-                                                class="py-2 px-3 rounded-sm bg-blue-200 text-blue-700 mr-auto text-xs sm:text-md">
-                                            ویرایش
-                                        </button>
+                                                    class="py-2 px-3 rounded-sm bg-blue-200 text-blue-700 mr-auto text-xs sm:text-md">
+                                                ویرایش
+                                            </button>
+                                            <button on:click={() => {
+                                            removeSubject(subject_item.id)
+                                        }}
+                                                    class="py-2 px-3 rounded-sm bg-red-200 text-red-700 text-xs sm:text-md">
+                                                حذف
+                                            </button>
+                                        </div>
                                     </div>
                                 {/if}
                             </div>
