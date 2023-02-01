@@ -19,7 +19,8 @@
 
         if (req.ok) {
             periods = res;
-            console.log(periods);
+            selected_period = periods[0];
+            // console.log(periods);
             // if (requests.length < 10)
             //     show_more_visible = false;
         } else {
@@ -28,19 +29,24 @@
     }
 
     async function getTopics() {
-        const req = await fetch(`${END_POINT}/api/topic/get_topics?periodId=862C6C95-003A-48E1-B1A6-267464F1A0FF`)
-        const res = await req.json();
+        if (selected_period) {
+            console.log(selected_period.id);
+            const req = await fetch(`${END_POINT}/api/topic/get_topics?periodId=${selected_period.id}`)
+            const res = await req.json();
 
-        if (req.ok) {
-            return res;
-            // if (requests.length < 10)
-            //     show_more_visible = false;
-        } else {
-            // show_more_visible = false;
+            if (req.ok) {
+                return res;
+                // if (requests.length < 10)
+                //     show_more_visible = false;
+            } else {
+                // show_more_visible = false;
+            }
         }
     }
 
     let selected_topic;
+
+    let selected_period;
 
     let subjects;
 
@@ -178,14 +184,15 @@
 
     let opened_topic = undefined;
 
-    onMount(() => {
+    onMount(async () => {
         let token = $page.url.searchParams;
         if (token.has("token")) {
             console.log('here is the token')
             console.log(token.has('token') ? token.get('token') : 'not available');
-            goto('/', {replaceState: false})
+            await goto('/', {replaceState: false})
         }
-        topics = getTopics();
+        await getPeriods();
+        // topics = getTopics();
     });
 
     async function submitTopicProgress() {
@@ -235,6 +242,11 @@
         }
     }
 
+    $: {
+        if (selected_period) {
+            topics = getTopics();
+        }
+    }
 
 </script>
 
@@ -281,6 +293,15 @@
                 </div>
             {/if}
             <div class="px-4 py-2">
+                {#if selected_period}
+                    <select class="border-2 border-gray-100 w-full mb-4"
+                            bind:value={selected_period}>
+                        {#each Array.from(periods) as period}
+                            <option value="{period}" id="{period}">{period.title}</option>
+                        {/each}
+                    </select>
+                {:else}
+                {/if}
                 <h1 class="font-bold text-xs sm:text-md">موضوعات موجود در دوره</h1>
             </div>
             <hr/>

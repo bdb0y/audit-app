@@ -12,7 +12,8 @@
     let topic_on_modify = {
         id: '',
         description: '',
-        period: ''
+        period: '',
+        active: false
     };
 
     let on_new_topic = false;
@@ -96,6 +97,117 @@
         };
     }
 
+    async function modifyTopic() {
+        console.log(JSON.stringify(topic_on_modify));
+
+        console.log(getPeriodId(topic_on_modify.period));
+
+        const form_body = new FormData();
+        form_body.append('id', topic_on_modify.id);
+        form_body.append('title', topic_on_modify.title);
+        form_body.append('description', topic_on_modify.description);
+        form_body.append('period', topic_on_modify.period);
+        form_body.append('active', topic_on_modify.active);
+
+        const req = await fetch(`${END_POINT}/api/topic/update_topic`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            topics = getTopics();
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+
+        topic_on_modify = {
+            title: '',
+            description: '',
+            period: '',
+            active: true
+        };
+
+        on_modify_topic = false;
+    }
+
+    function getPeriodId(title) {
+        for (let i = 0; i < periods.length; i++) {
+            if (periods[i].title === title)
+                return periods[i].id;
+        }
+        return -1;
+    }
+
+    async function removeTopic(id) {
+        console.log(JSON.stringify(topic_on_create));
+
+        const form_body = new FormData();
+        form_body.append('topicId', id);
+
+        const req = await fetch(`${END_POINT}/api/topic/delete_topic`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            topics = getTopics();
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+    }
+
+    async function inactivateTopic(id) {
+        console.log(JSON.stringify(topic_on_create));
+
+        const form_body = new FormData();
+        form_body.append('topicId', id);
+
+        const req = await fetch(`${END_POINT}/api/topic/set_inactive`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            topics = getTopics();
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+    }
+
+    async function activateTopic(id) {
+        console.log(JSON.stringify(topic_on_create));
+
+        const form_body = new FormData();
+        form_body.append('topicId', id);
+
+        const req = await fetch(`${END_POINT}/api/topic/set_active`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            topics = getTopics();
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+    }
+
 </script>
 
 <div>
@@ -175,27 +287,31 @@
                     <div class="flex flex-col py-2 px-2 gap-2">
                         <div class="px-2 flex flex-col gap-2 text-sm">
                             <label for="mselected_topic_title">عنوان</label>
-                            <input bind:value={topic_on_create.title}
+                            <input bind:value={topic_on_modify.title}
                                    id="mselected_topic_title"
                                    class="border-2 border-gray-100 py-2 px-2 rounded-sm"
                                    type="text" placeholder="عنوان موضوع"/>
                         </div>
                         <div class="px-2 flex flex-col gap-2 text-sm grow">
                             <label for="mselected_topic_description">توضیحات موضوع</label>
-                            <textarea bind:value={topic_on_create.description}
+                            <textarea bind:value={topic_on_modify.description}
                                       id="mselected_topic_description"
                                       class="border-2 border-gray-100 py-2 px-2 rounded-sm"
                                       type="text" placeholder="توضیحات"></textarea>
                         </div>
                         <div class="px-2 flex flex-col gap-2 text-sm grow">
                             <label for="mselected_topic_period">دوره ی فعال</label>
-                            <input bind:value={topic_on_create.period}
-                                   id="mselected_topic_period"
-                                   class="border-2 border-gray-100 py-2 px-2 rounded-sm"
-                                   type="text" placeholder="1401/12/26"/>
+                            <select class="border-2 border-gray-100"
+                                    id="mselected_topic_period" bind:value={topic_on_modify.period}>
+                                {#if periods}
+                                    {#each periods as period}
+                                        <option value="{period.id}">{period.title}</option>
+                                    {/each}
+                                {/if}
+                            </select>
                         </div>
                         <div class="px-2 mr-auto">
-                            <button on:click={() => console.log()}
+                            <button on:click={() => modifyTopic(topic_on_modify.id)}
                                     class="bg-blue-500 text-white py-2 hover:bg-blue-600 rounded-sm mr-auto px-8">ثبت
                             </button>
                             <button on:click={() => {
@@ -256,7 +372,7 @@
                                         {topic.title}
                                     </td>
                                     <td class="py-6 px-6 whitespace-nowrap flex justify-center">
-                                        {topic.description.length > 30 ? topic.description.substring(0, 30) : topic.description}
+                                        {topic.description.length > 30 ? `${topic.description.substring(0, 30)}...` : topic.description}
                                     </td>
                                     <td class="py-6 px-6 whitespace-nowrap">
                                         {topic.period}
@@ -272,12 +388,24 @@
                                     <td class="py-6 px-6 whitespace-nowrap">
                                         <div class="flex flex-row gap-2 items-center justify-center text-md">
                                             <i on:click={() => {
-                                    // on_modify_topic = !on_modify_topic;
-                                    // on_new_topic = false;
-                                }}
+                                                on_modify_topic = true;
+                                                on_new_topic = false;
+                                                topic_on_modify.id = topic.id;
+                                                topic_on_modify.title = topic.title;
+                                                topic_on_modify.description = topic.description;
+                                                topic_on_modify.period = getPeriodId(topic.period);
+                                                topic_on_modify.active = topic.active;
+                                            }}
                                                class="bi bi-pencil-square flex bg-yellow-600 text-white p-[3px] rounded-sm"></i>
-                                            <i class="bi bi-lightbulb-off flex bg-black text-white p-[3px] rounded-sm"></i>
-                                            <i class="bi bi-trash flex text-md bg-red-600 text-white p-[3px] rounded-sm"></i>
+                                            {#if topic.active}
+                                                <i on:click={() => inactivateTopic(topic.id)}
+                                                   class="bi bi-lightbulb-off flex bg-black text-white p-[3px] rounded-sm"></i>
+                                            {:else}
+                                                <i on:click={() => activateTopic(topic.id)}
+                                                   class="bi bi-lightbulb flex bg-yellow-400 text-white p-[3px] rounded-sm"></i>
+                                            {/if}
+                                            <i on:click={() => removeTopic(topic.id)}
+                                               class="bi bi-trash flex text-md bg-red-600 text-white p-[3px] rounded-sm"></i>
                                         </div>
                                     </td>
                                 </tr>

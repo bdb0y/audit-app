@@ -12,7 +12,8 @@
     let period_on_modify = {
         id: '',
         fromDate: '',
-        toDate: ''
+        toDate: '',
+        active: ''
     };
 
     let on_new_period = false;
@@ -20,7 +21,7 @@
     let on_modify_period = false;
 
     async function getPeriods() {
-        const req = await fetch(`${END_POINT}/api/period/get_periods`)
+        const req = await fetch(`${END_POINT}/api/period/get_all_periods`)
         const res = await req.json();
 
         if (req.ok) {
@@ -43,6 +44,17 @@
             month: 'long',
             day: 'numeric'
         });
+
+        return full_date;
+    }
+
+    function modify_convert_date_short(date) {
+        let full_date = new Date(date.replace(/-/g, "/")).toLocaleDateString('fa-IR', {
+            // weekday: 'long',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }) ;
 
         return full_date;
     }
@@ -99,6 +111,103 @@
         };
     }
 
+    async function modifyPeriod() {
+        console.log(JSON.stringify(period_on_create));
+
+        const form_body = new FormData();
+        form_body.append('id', period_on_modify.id);
+        form_body.append('title', period_on_modify.title);
+        form_body.append('toDate', convert_date_en(period_on_modify.toDate));
+        form_body.append('fromDate', convert_date_en(period_on_modify.fromDate));
+        form_body.append('active', period_on_modify.active);
+
+        const req = await fetch(`${END_POINT}/api/period/update_period`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            periods = getPeriods();
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+
+        period_on_modify = {
+            title: '',
+            fromDate: '',
+            toDate: '',
+            active: false
+        };
+
+        on_modify_period = false;
+    }
+
+    async function removePeriod(id) {
+        const form_body = new FormData();
+        form_body.append('periodId', id);
+
+        const req = await fetch(`${END_POINT}/api/period/delete_period`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            periods = getPeriods();
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+    }
+
+    async function inactivatePeriod(id) {
+
+        const form_body = new FormData();
+        form_body.append('periodId', id);
+
+        const req = await fetch(`${END_POINT}/api/period/set_inactive`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            periods = getPeriods();
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+    }
+
+    async function activatePeriod(id) {
+
+        const form_body = new FormData();
+        form_body.append('periodId', id);
+
+        const req = await fetch(`${END_POINT}/api/period/set_active`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            periods = getPeriods();
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+    }
+
     import {cleave} from 'svelte-cleavejs'
 
     let date_format_options = {
@@ -106,6 +215,8 @@
         delimiter: '/',
         datePattern: ['Y', 'm', 'd']
     };
+
+    const p2e = s => s.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
 
 </script>
 
@@ -182,7 +293,7 @@
                     <div class="flex flex-col py-2 px-2 gap-2">
                         <div class="px-2 flex flex-col gap-2 text-sm">
                             <label for="mselected_period_title">عنوان</label>
-                            <input bind:value={period_on_create.title}
+                            <input bind:value={period_on_modify.title}
                                    id="mselected_period_title"
                                    class="border-2 border-gray-100 py-2 px-2 rounded-sm"
                                    type="text" placeholder="عنوان دوره"/>
@@ -190,21 +301,23 @@
                         <div class="px-2 flex flex-row gap-2">
                             <div class="flex flex-col gap-2 text-sm grow">
                                 <label for="mselected_period_fromDate">تاریخ شروع دوره</label>
-                                <input bind:value={period_on_create.fromDate}
+                                <input use:cleave={date_format_options}
+                                        bind:value={period_on_modify.fromDate}
                                        id="mselected_period_fromDate"
                                        class="border-2 border-gray-100 py-2 px-2 rounded-sm"
                                        type="text" placeholder="1401/09/26"/>
                             </div>
                             <div class="flex flex-col gap-2 text-sm grow">
                                 <label for="mselected_period_toDate">تاریخ پایان دوره</label>
-                                <input bind:value={period_on_create.toDate}
+                                <input use:cleave={date_format_options}
+                                        bind:value={period_on_modify.toDate}
                                        id="mselected_period_toDate"
                                        class="border-2 border-gray-100 py-2 px-2 rounded-sm"
                                        type="text" placeholder="1401/12/26"/>
                             </div>
                         </div>
                         <div class="px-2 mr-auto">
-                            <button on:click={() => console.log()}
+                            <button on:click={() => modifyPeriod()}
                                     class="bg-blue-500 text-white py-2 hover:bg-blue-600 rounded-sm mr-auto px-8">ثبت
                             </button>
                             <button on:click={() => {
@@ -282,12 +395,24 @@
                                     <td class="py-6 px-6 whitespace-nowrap">
                                         <div class="flex flex-row gap-2 items-center justify-center text-md">
                                             <i on:click={() => {
-                                    //on_modify_period = !on_modify_period;
-                                    //on_new_period = false;
-                                }}
+                                                on_modify_period = true;
+                                                on_new_period = false;
+                                                period_on_modify.id = period.id;
+                                                period_on_modify.title = period.title;
+                                                period_on_modify.fromDate = p2e(modify_convert_date_short(period.fromDate));
+                                                period_on_modify.toDate = p2e(modify_convert_date_short(period.toDate));
+                                                period_on_modify.active = period.active;
+                                            }}
                                                class="bi bi-pencil-square flex bg-yellow-600 text-white p-[3px] rounded-sm"></i>
-                                            <i class="bi bi-lightbulb-off flex bg-black text-white p-[3px] rounded-sm"></i>
-                                            <i class="bi bi-trash flex text-md bg-red-600 text-white p-[3px] rounded-sm"></i>
+                                            {#if period.active}
+                                                <i on:click={() => inactivatePeriod(period.id)}
+                                                   class="bi bi-lightbulb-off flex bg-black text-white p-[3px] rounded-sm"></i>
+                                            {:else}
+                                                <i on:click={() => activatePeriod(period.id)}
+                                                   class="bi bi-lightbulb flex bg-yellow-400 text-white p-[3px] rounded-sm"></i>
+                                            {/if}
+                                            <i on:click={() => removePeriod(period.id)}
+                                               class="bi bi-trash flex text-md bg-red-600 text-white p-[3px] rounded-sm"></i>
                                         </div>
                                     </td>
                                 </tr>
