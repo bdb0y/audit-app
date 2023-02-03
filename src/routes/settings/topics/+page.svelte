@@ -369,6 +369,7 @@
                                         class="hover:cursor-pointer even:bg-gray-50 text-center bg-white hover:bg-gray-50 ">
                                     <td scope="row"
                                         class="py-6 px-6 whitespace-nowrap font-medium text-gray-900 ">
+                                        <!--{topic.title.length > 30 ? `${topic.title.substring(0, 30)}...` : topic.title}-->
                                         {topic.title}
                                     </td>
                                     <td class="py-6 px-6 whitespace-nowrap flex justify-center">
