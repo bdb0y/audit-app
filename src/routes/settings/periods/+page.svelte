@@ -54,7 +54,7 @@
             year: 'numeric',
             month: '2-digit',
             day: '2-digit'
-        }) ;
+        });
 
         return full_date;
     }
@@ -218,6 +218,36 @@
 
     const p2e = s => s.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
 
+    let is_create_form_complete = false;
+
+    $: {
+        is_create_form_complete =
+            period_on_create
+            && period_on_create.title
+            && period_on_create.fromDate
+            && period_on_create.toDate
+            && period_on_create.title.length > 0
+            && period_on_create.fromDate.length === 10
+            && period_on_create.toDate.length === 10;
+
+        console.log(is_create_form_complete);
+    }
+
+    let is_modify_form_complete = false;
+
+    $: {
+        is_modify_form_complete =
+            period_on_modify
+            && period_on_modify.title
+            && period_on_modify.fromDate
+            && period_on_modify.toDate
+            && period_on_modify.title.length > 0
+            && period_on_modify.fromDate.length === 10
+            && period_on_modify.toDate.length === 10;
+
+        console.log(is_modify_form_complete);
+    }
+
 </script>
 
 <div>
@@ -246,7 +276,7 @@
                                    class="border-2 border-gray-100 py-2 px-2 rounded-sm"
                                    type="text" placeholder="عنوان دوره"/>
                         </div>
-                        <div class="px-2 flex flex-row gap-2">
+                        <div class="px-2 flex flex-col  gap-2 text-sm grow">
                             <div class="flex flex-col gap-2 text-sm grow">
                                 <label for="selected_period_fromDate">تاریخ شروع دوره</label>
                                 <input use:cleave={date_format_options} bind:value={period_on_create.fromDate}
@@ -263,10 +293,11 @@
                             </div>
                         </div>
                         <div class="px-2 mr-auto">
-                            <button on:click={() => {
+                            <button disabled={!is_create_form_complete}
+                                    on:click={() => {
                                 createPeriod();
                             }}
-                                    class="bg-blue-500 text-white py-2 hover:bg-blue-600 rounded-sm mr-auto px-8">ثبت
+                                    class="{is_create_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_create_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">ثبت
                             </button>
                             <button on:click={() => {
                                 on_new_period = false;
@@ -302,7 +333,7 @@
                             <div class="flex flex-col gap-2 text-sm grow">
                                 <label for="mselected_period_fromDate">تاریخ شروع دوره</label>
                                 <input use:cleave={date_format_options}
-                                        bind:value={period_on_modify.fromDate}
+                                       bind:value={period_on_modify.fromDate}
                                        id="mselected_period_fromDate"
                                        class="border-2 border-gray-100 py-2 px-2 rounded-sm"
                                        type="text" placeholder="1401/09/26"/>
@@ -310,15 +341,16 @@
                             <div class="flex flex-col gap-2 text-sm grow">
                                 <label for="mselected_period_toDate">تاریخ پایان دوره</label>
                                 <input use:cleave={date_format_options}
-                                        bind:value={period_on_modify.toDate}
+                                       bind:value={period_on_modify.toDate}
                                        id="mselected_period_toDate"
                                        class="border-2 border-gray-100 py-2 px-2 rounded-sm"
                                        type="text" placeholder="1401/12/26"/>
                             </div>
                         </div>
                         <div class="px-2 mr-auto">
-                            <button on:click={() => modifyPeriod()}
-                                    class="bg-blue-500 text-white py-2 hover:bg-blue-600 rounded-sm mr-auto px-8">ثبت
+                            <button disabled={!is_modify_form_complete}
+                                    on:click={() => modifyPeriod()}
+                                    class="{is_modify_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_modify_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">ثبت
                             </button>
                             <button on:click={() => {
                                 on_modify_period = false;
@@ -342,7 +374,7 @@
             </div>
             <div class="md:p-2 overflow-auto">
                 <table role="gridcell"
-                       class="w-full text-sm text-left text-gray-500">
+                       class="w-full text-sm text-left text-gray-500 mb-8">
                     <thead class="text-xsm md:text-md text-center text-gray-700 uppercase bg-gray-100">
                     <tr class="">
                         <th scope="col" class="py-3 px-6 whitespace-nowrap">

@@ -31,7 +31,8 @@
     async function getTopics() {
         if (selected_period) {
             console.log(selected_period.id);
-            const req = await fetch(`${END_POINT}/api/topic/get_topics?periodId=${selected_period.id}`)
+
+            const req = await fetch(`${END_POINT}/api/topic/get_topics?periodId=${selected_period.id}&unitId=${unitId}`)
             const res = await req.json();
 
             if (req.ok) {
@@ -50,7 +51,7 @@
 
     let subjects;
 
-    let unitId = 1001;
+    let unitId = 1002;
 
     let personnelId = 299212;
 
@@ -198,6 +199,7 @@
     async function submitTopicProgress() {
         const form_body = new FormData();
         form_body.append('topicId', topic_on_modify.id);
+        form_body.append('unitId', unitId);
         form_body.append('progress', topic_on_modify.progress);
 
         const req = await fetch(`${END_POINT}/api/topic/set_progress`, {
@@ -217,6 +219,7 @@
         }
 
         on_modify_topic = false;
+        selected_topic = undefined;
     }
 
     async function removeSubject(subjectId) {
@@ -245,6 +248,7 @@
     $: {
         if (selected_period) {
             topics = getTopics();
+            selected_topic = undefined;
         }
     }
 
@@ -292,8 +296,9 @@
                     <hr/>
                 </div>
             {/if}
-            <div class="px-4 py-2">
+            <div class="px-4 py-2 flex flex-col gap-2">
                 {#if selected_period}
+                    <span>دوره های فعال</span>
                     <select class="border-2 border-gray-100 w-full mb-4"
                             bind:value={selected_period}>
                         {#each Array.from(periods) as period}
@@ -324,6 +329,10 @@
                                     }
                                     topic.is_opened = true;
                                     opened_topic = topic;
+
+                                    topic_on_modify.id = topic.id;
+                                    topic_on_modify.title = topic.title;
+                                    topic_on_modify.progress = topic.progress;
                                 }}
                                      class="py-2 px-4 flex flex-row cursor-pointer items-center gap-4 odd:bg-blue-400 even:bg-blue-500 text-white hover:bg-blue-500">
                                     <i class="bi bi-file-text flex text-lg"></i>

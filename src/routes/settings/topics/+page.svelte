@@ -49,6 +49,8 @@
     onMount(async () => {
         topics = getTopics();
         periods = await getPeriods();
+        if (periods.length > 0)
+            topic_on_create.period = periods.id;
     });
 
     function convert_date_long(date) {
@@ -93,7 +95,7 @@
         topic_on_create = {
             title: '',
             description: '',
-            period: ''
+            period: topic_on_create.period
         };
     }
 
@@ -127,7 +129,6 @@
         topic_on_modify = {
             title: '',
             description: '',
-            period: '',
             active: true
         };
 
@@ -208,6 +209,36 @@
         }
     }
 
+    let is_create_form_complete = false;
+
+    $: {
+        is_create_form_complete =
+            topic_on_create
+            && topic_on_create.title
+            && topic_on_create.description
+            && topic_on_create.period
+            && topic_on_create.title.length > 0
+            && topic_on_create.description.length > 0
+            && topic_on_create.period.length > 0;
+
+        console.log(is_create_form_complete);
+    }
+
+    let is_modify_form_complete = false;
+
+    $: {
+        is_modify_form_complete =
+            topic_on_modify
+            && topic_on_modify.title
+            && topic_on_modify.description
+            && topic_on_modify.period
+            && topic_on_modify.title.length > 0
+            && topic_on_modify.description.length > 0
+            && topic_on_modify.period.length > 0;
+
+        console.log(is_modify_form_complete);
+    }
+
 </script>
 
 <div>
@@ -259,8 +290,9 @@
                             </select>
                         </div>
                         <div class="px-2 mr-auto">
-                            <button on:click={() => createTopic()}
-                                    class="bg-blue-500 text-white py-2 hover:bg-blue-600 rounded-sm mr-auto px-8">ثبت
+                            <button disabled={!is_create_form_complete}
+                                    on:click={() => createTopic()}
+                                    class="{is_create_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_create_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">ثبت
                             </button>
                             <button on:click={() => {
                                 on_new_topic = false;
@@ -311,8 +343,9 @@
                             </select>
                         </div>
                         <div class="px-2 mr-auto">
-                            <button on:click={() => modifyTopic(topic_on_modify.id)}
-                                    class="bg-blue-500 text-white py-2 hover:bg-blue-600 rounded-sm mr-auto px-8">ثبت
+                            <button disabled={!is_modify_form_complete}
+                                    on:click={() => modifyTopic(topic_on_modify.id)}
+                                    class="{is_modify_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_modify_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">ثبت
                             </button>
                             <button on:click={() => {
                                 on_modify_topic = false;
@@ -336,7 +369,7 @@
             </div>
             <div class="md:p-2 overflow-auto">
                 <table role="gridcell"
-                       class="w-full text-sm text-left text-gray-500">
+                       class="w-full text-sm text-left text-gray-500 mb-8">
                     <thead class="text-xsm md:text-md text-center text-gray-700 uppercase bg-gray-100">
                     <tr class="">
                         <th scope="col" class="py-3 px-6 whitespace-nowrap">
