@@ -34,14 +34,16 @@
     let on_upload_doc = false;
 
     async function getSubjects() {
-        const req = await fetch(`${END_POINT}/api/subject/get_subjects`)
+        const req = await fetch(`${END_POINT}/api/subject/get_subjects`);
+        try {
+            const res = await req.json();
 
-        const res = await req.json();
+            if (req.ok) {
+                return res;
+            } else {
+            }
+        } catch (e){
 
-        if (req.ok) {
-
-            return res;
-        } else {
         }
     }
 
