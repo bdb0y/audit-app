@@ -20,7 +20,7 @@
     })
 </script>
 
-<div class="bg-blue-500 flex flex-row items-center px-2 py-2 sm:py-4 sm:px-4 w-full h-12 fixed shadow-md">
+<div class="bg-blue-500 flex flex-row items-center px-2 py-2 sm:py-4 sm:px-4 w-full h-12 fixed shadow-md z-20">
     <i on:click={() => is_sidebar_open.set(!sidebar_opened)}
        class="bi bi-list flex text-2xl text-white"></i>
     <div class="mr-auto flex flex-row gap-2 sm:gap-4 text-white text-xs items-center">

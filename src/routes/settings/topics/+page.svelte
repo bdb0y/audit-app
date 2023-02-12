@@ -21,7 +21,7 @@
     let on_modify_topic = false;
 
     async function getTopics() {
-        const req = await fetch(`${END_POINT}/api/topic/get_period_topics`)
+        const req = await fetch(`${END_POINT}/api/topic/get_topics`)
         const res = await req.json();
 
         if (req.ok) {
@@ -403,7 +403,7 @@
                                     <td scope="row"
                                         class="py-6 px-6 whitespace-nowrap font-medium text-gray-900 ">
                                         <!--{topic.title.length > 30 ? `${topic.title.substring(0, 30)}...` : topic.title}-->
-                                        {topic.title}
+                                        {topic.title.length > 30 ? `${topic.title.substring(0, 30)}...` : topic.title}
                                     </td>
                                     <td class="py-6 px-6 whitespace-nowrap flex justify-center">
                                         {topic.description.length > 30 ? `${topic.description.substring(0, 30)}...` : topic.description}

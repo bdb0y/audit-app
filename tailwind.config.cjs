@@ -10,6 +10,10 @@ module.exports = {
       'xl': '1280px',
       '2xl': '1536px'
     },
+    minHeight: {
+      '1/2': '50%',
+      '16': '1rem'
+    },
     extend: {},
   },
   plugins: [],

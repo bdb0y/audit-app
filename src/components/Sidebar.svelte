@@ -14,7 +14,7 @@
 
 </script>
 
-<div class="{sidebar_opened ? 'block w-full':'hidden w-48'} md:block fixed bg-slate-700 h-screen z-10">
+<div class="{sidebar_opened ? 'block w-full':'hidden w-48'} md:block fixed bg-slate-700 h-screen z-30">
     <div class="h-12 px-4 py-2 flex flex-row justify-center bg-blue-600 items-center">
         <h1 class="whitespace-nowrap font-bold text-white text-center">خدمات دریایی سینا</h1>
         <i on:click={() => is_sidebar_open.set(false)}
@@ -57,6 +57,14 @@
                                 class="py-2 flex items-center gap-2 hover:text-slate-300">
                             <i class="bi bi-bullseye flex text-lg"></i>
                             پیمایش موضوعات
+                        </li>
+                        <li on:click={() => {
+                            goto('/settings/subjects', {replaceState: false});
+                            is_sidebar_open.set(false);
+                        }}
+                            class="py-2 flex items-center gap-2 hover:text-slate-300">
+                            <i class="bi bi-bullseye flex text-lg"></i>
+                            پیمایش عناوین
                         </li>
                     </ul>
                 {/if}
