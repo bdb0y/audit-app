@@ -1,1 +1,1 @@
-export let END_POINT = '';
+export let END_POINT = 'http://localhost:8081';

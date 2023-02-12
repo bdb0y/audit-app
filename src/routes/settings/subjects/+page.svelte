@@ -35,10 +35,11 @@
 
     async function getSubjects() {
         const req = await fetch(`${END_POINT}/api/subject/get_subjects`)
+
         const res = await req.json();
 
         if (req.ok) {
-            console.log(res);
+
             return res;
         } else {
         }
@@ -78,8 +79,8 @@
         units = await getUnits();
         if (periods.length > 0) {
             selected_period = periods[0];
-            subject_on_create.period = periods.id;
-            subject_on_modify.period = periods.id;
+            subject_on_create.period = selected_period.id;
+            subject_on_modify.period = selected_period.id;
             await getPeriodTopics();
         }
 
@@ -116,10 +117,11 @@
             title: '',
             description: '',
             period: subject_on_create.period,
-            topicId: '',
-            category: '',
+            topicId: subject_on_create.topicId,
+            category: subject_on_create.category,
             units: []
         };
+        on_new_subject = false;
     }
 
     let on_upload = false;
@@ -189,7 +191,6 @@
 
         on_modify_subject = false;
     }
-
 
 
     function getPeriodId(title) {
@@ -310,6 +311,8 @@
             if (topics.length > 0) {
                 subject_on_create.topicId = topics[0].id;
                 subject_on_modify.topicId = topics[0].id;
+                console.log('these are the topics');
+                console.log(topics);
                 await getTopicCategories();
             }
         } else {
@@ -400,7 +403,7 @@
                                 <label for="selected_period">دوره ی فعال</label>
                                 <select class="border-2 border-gray-100"
                                         id="selected_period" bind:value={subject_on_create.period}
-                                        on:change={()=> getPeriodTopics()}>
+                                        on:change={() => getPeriodTopics()}>
                                     {#if periods}
                                         {#each periods as period}
                                             <option value="{period.id}">{period.title}</option>
@@ -450,6 +453,14 @@
                                 </button>
                                 <button on:click={() => {
                                 on_new_subject = false;
+                                subject_on_create = {
+                                    title: '',
+                                    description: '',
+                                    period: subject_on_create.period,
+                                    topicId: subject_on_create.topicId,
+                                    category: subject_on_create.category,
+                                    units: []
+                                };
                             }}
                                         class="bg-slate-500 hover:bg-slate-600 text-white py-2 rounded-sm px-4">لغو
                                 </button>
