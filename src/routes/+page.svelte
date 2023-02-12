@@ -51,7 +51,7 @@
 
     let subjects;
 
-    let unitId = 1001;
+    let unitId = 1003;
 
     let personnelId = 299212;
 
@@ -79,6 +79,10 @@
     }
 
     // create subject
+
+    let subject_on_delete = {
+        id: ''
+    }
 
     let subject_on_create = {
         topicId: '',
@@ -151,7 +155,7 @@
             progress: 0,
             weight: 0,
             normalWeight: 0,
-            category: ''
+            category: subject_on_create.category
         };
 
         // on_new_subject = false;
@@ -252,6 +256,8 @@
         } else {
             // show_more_visible = false;
         }
+
+        on_delete = false;
     }
 
     $: {
@@ -329,19 +335,22 @@
         attachments: []
     }
 
+    let on_delete = false;
+
 
 </script>
 
 
 <div class="bg-gray-100 overflow-hidden relative">
-    {#if on_new_subject || on_modify_subject || on_show_documents}
+    {#if on_new_subject || on_modify_subject || on_show_documents || on_delete}
         <div class="bg-black/60 backdrop-opacity-50 w-screen h-screen fixed top-0 right-0 z-20">
             <dialog in:fly="{{ y: -100, duration: 200 }}" out:fly="{{ y: -100, duration: 200 }}"
                     class="z-20 w-full md:w-3/5 drop-shadow-xl top-48 p-0 dialog-box"
-                    open="{on_new_subject || on_modify_subject || on_show_documents ? 'open':''}">
+                    open="{on_new_subject || on_modify_subject || on_show_documents || on_delete ? 'open':''}">
                 {#if on_new_subject}
                     <div>
-                        <div class="px-4 py-4 flex flex-row items-center bg-blue-600 text-white">
+                        <div style="background-color: #3C8DBC"
+                             class="px-4 py-4 flex flex-row items-center text-white">
                             <h1 class="font-bold">ثبت عنوان جدید در این موضوع</h1>
                         </div>
                         <hr/>
@@ -412,7 +421,20 @@
                                     class="{is_create_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_create_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">
                                 ثبت
                             </button>
-                            <button on:click={() => on_new_subject = !on_new_subject}
+                            <button on:click={() => {
+                                on_new_subject = !on_new_subject;
+                                subject_on_create = {
+                                    topicId: subject_on_create.topicId,
+                                    unitId: subject_on_create.unitId,
+                                    personnelId,
+                                    title: '',
+                                    description: '',
+                                    progress: 0,
+                                    weight: 0,
+                                    normalWeight: 0,
+                                    category: subject_on_create.category
+                                };
+                            }}
                                     class="bg-slate-500 text-white px-6 py-2 hover:bg-slate-600 rounded-sm">لغو
                             </button>
                         </div>
@@ -420,7 +442,8 @@
                 {/if}
                 {#if on_modify_subject}
                     <div>
-                        <div class="px-4 py-4 flex flex-row items-center bg-blue-600 text-white">
+                        <div style="background-color: #3C8DBC"
+                             class="px-4 py-4 flex flex-row items-center text-white">
                             <h1 class="font-bold">ویرایش عنوان انتخاب شده</h1>
                             {#if on_new_subject}
                                 <i on:click={() => {
@@ -497,7 +520,8 @@
                 {#if on_show_documents}
                     <div class="mb-8">
                         <div class="flex flex-col gap-2">
-                            <div class="px-4 py-4 flex flex-row items-center bg-blue-600 text-white">
+                            <div style="background-color: #3C8DBC"
+                                 class="px-4 py-4 flex flex-row items-center text-white">
                                 <h1 class="font-bold">بارگیری اسناد</h1>
                             </div>
                             {#if subject_on_show_documents.attachments}
@@ -520,6 +544,31 @@
                                 on_show_documents = false;
                             }}
                                         class="bg-slate-500 hover:bg-slate-600 text-white py-2 rounded-sm px-4">بستن
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {/if}
+                {#if on_delete}
+                    <div>
+                        <div style="background-color: #3C8DBC"
+                             class="px-4 py-4 flex flex-row items-center text-white">
+                            <h1 class="font-bold">حذف عنوان</h1>
+                        </div>
+                        <hr/>
+                        <div class="flex flex-col py-2 px-2 gap-2">
+                            <div>
+                                <span>شما در حال حذف این عنوان میباشید، آیا مطمئن هستید؟</span>
+                            </div>
+                            <div class="px-2 text-left pb-2">
+                                <button on:click={() => removeSubject(subject_on_delete.id)}
+                                        class="bg-blue-500 text-white py-2 hover:bg-blue-600 rounded-sm mr-auto px-8">
+                                    بله
+                                </button>
+                                <button on:click={() => {
+                                    on_delete = false;
+                                }}
+                                        class="bg-slate-500 text-white px-6 py-2 hover:bg-slate-600 rounded-sm">لغو
                                 </button>
                             </div>
                         </div>
@@ -573,11 +622,11 @@
                                 subjects = await getTopicSubjects();
                             }}
                                  class="rounded-sm text-sm flex flex-col gap-2 text-xs sm:text-md">
-                                <div in:fly="{{ y: -50, duration: 200 }}"
-                                     class="flex flex-row cursor-pointer odd:bg-blue-500 even:bg-blue-500 hover:bg-blue-400 text-white relative">
+                                <div in:fly="{{ y: -50, duration: 200 }}" style="background-color: #55BAD7;"
+                                     class="flex flex-row cursor-pointer text-white relative">
                                     <div class="z-10 absolute left-2 -top-3 flex flex-row gap-2">
-                                        <span style="direction: ltr"
-                                                class="font-bold text-[8px] bg-blue-200 text-blue-700 px-2 py-[1px] rounded-lg">{topic.progress}
+                                        <span style="direction: ltr;background-color: #357CA5"
+                                              class="font-bold text-[8px] text-white px-2 py-[1px] rounded-lg">{topic.progress}
                                             امتیاز/درصد پیشرفت</span>
                                         <!--                                        <div class="font-bold text-[8px] bg-blue-200 text-blue-700 px-2 py-[1px] rounded-lg">-->
                                         <!--                                            3 عنوان اضافه شده-->
@@ -709,17 +758,19 @@
                             </div>
                         {:else}
                             {#each Object.keys(grouped_items) as subject_items}
-                                <div class="px-6 py-3 bg-blue-500 flex flex-row text-white font-bold items-center">
+                                <div style="background-color: #357CA5"
+                                     class="px-6 py-3 flex flex-row text-white font-bold items-center">
                                     <span class="">{subject_items}</span>
                                     <span class="mr-auto text-xs">{grouped_items[subject_items].length} عنوان</span>
                                 </div>
                                 <div class="py-2 px-2 flex flex-col gap-4">
                                     {#if grouped_items[subject_items].length > 0}
                                         {#each grouped_items[subject_items] as subject_item}
-                                            <div class="relative bg-blue-300 hover:bg-blue-400 text-white cursor-pointer rounded-sm text-xs sm:text-md flex flex-col">
+                                            <div style="background-color: #58D9EF"
+                                                 class="relative text-white cursor-pointer rounded-sm text-xs sm:text-md flex flex-col">
                                                 <div class="z-10 absolute left-2 -top-3 flex flex-row">
-                                                <span style="direction: ltr"
-                                                        class="font-bold text-[8px] bg-blue-500 text-white px-2 py-[1px] rounded-lg">{subject_item.progress}
+                                                <span style="direction: ltr;background-color: #357CA5"
+                                                      class="font-bold text-[8px] text-white px-2 py-[1px] rounded-lg">{subject_item.progress}
                                                     امتیاز/درصد پیشرفت</span>
                                                 </div>
                                                 <div class="flex flex-row h-16 items-center">
@@ -748,7 +799,10 @@
                                                     {#if !subject_item.isAdmin}
                                                         {#if !subject_item.locked}
                                                             <i on:click={() => {
-                                                            removeSubject(subject_item.id)
+                                                               on_delete = true;
+                                                               on_modify_subject = false;
+                                                               on_new_subject = false;
+                                                               subject_on_delete.id = subject_item.id;
                                                         }}
                                                                class="bi bi bi-trash flex text-lg px-4 h-full items-center hover:bg-blue-200"></i>
                                                         {/if}
@@ -795,8 +849,9 @@
 
     </div>
     {#if selected_topic}
-        <div on:click={() => selected_topic = undefined}
-             class="block md:hidden bg-blue-500 text-white text-center py-3 fixed bottom-0 left-0 w-full z-10">
+        <div style="background-color: #357CA5"
+             on:click={() => selected_topic = undefined}
+             class="block md:hidden text-white text-center py-3 fixed bottom-0 left-0 w-full z-10">
             <span>بازگشت</span>
         </div>
     {/if}

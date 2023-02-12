@@ -33,7 +33,18 @@
 
     let periods;
 
+    import {unitId} from "../../../stores.js";
+
+    let the_unit_id;
+
+    unitId.subscribe(value => {
+        the_unit_id = value;
+    });
+
     onMount(() => {
+        if (!the_unit_id || the_unit_id === -1 || the_unit_id === 1003) {
+            goto('/', {replaceState: false});
+        }
         periods = getPeriods();
     });
 
@@ -209,6 +220,7 @@
     }
 
     import {cleave} from 'svelte-cleavejs'
+    import {goto} from "$app/navigation";
 
     let date_format_options = {
         date: true,
