@@ -15,7 +15,8 @@
 </script>
 
 <div class="{sidebar_opened ? 'block w-full':'hidden w-48'} md:block fixed bg-slate-700 h-screen z-30">
-    <div class="h-12 px-4 py-2 flex flex-row justify-center bg-blue-600 items-center">
+    <div style="background-color: #357CA5"
+            class="h-12 px-4 py-2 flex flex-row justify-center items-center">
         <h1 class="whitespace-nowrap font-bold text-white text-center">خدمات دریایی سینا</h1>
         <i on:click={() => is_sidebar_open.set(false)}
            class="{sidebar_opened ? 'block':'hidden'} bi bi-x flex text-3xl mr-auto text-white"></i>

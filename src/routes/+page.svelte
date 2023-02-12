@@ -396,7 +396,7 @@
                             </div>
                             <div class="flex flex-col gap-2 text-sm">
                                 <div class="flex flex-row items-center">
-                                    <label for="selected_topic_progress">درصد پیشرفت</label>
+                                    <label for="selected_topic_progress">امتیاز/درصد پیشرفت</label>
                                     <span class="mr-auto">{subject_on_create.progress}/100</span>
                                 </div>
                                 <input type="range" bind:value={subject_on_create.progress} min=0 max=100
@@ -471,7 +471,7 @@
                             </div>
                             <div class="flex flex-col gap-2 text-sm">
                                 <div class="flex flex-row items-center">
-                                    <label for="mselected_topic_progress">درصد پیشرفت</label>
+                                    <label for="mselected_topic_progress">امتیاز/درصد پیشرفت</label>
                                     <span class="mr-auto">{subject_on_modify.progress}/100</span>
                                 </div>
                                 <input type="range" bind:value={subject_on_modify.progress} min=0 max=100
@@ -576,8 +576,9 @@
                                 <div in:fly="{{ y: -50, duration: 200 }}"
                                      class="flex flex-row cursor-pointer odd:bg-blue-500 even:bg-blue-500 hover:bg-blue-400 text-white relative">
                                     <div class="z-10 absolute left-2 -top-3 flex flex-row gap-2">
-                                        <span class="font-bold text-[8px] bg-blue-200 text-blue-700 px-2 py-[1px] rounded-lg">{topic.progress}
-                                            درصد پیشرفت</span>
+                                        <span style="direction: ltr"
+                                                class="font-bold text-[8px] bg-blue-200 text-blue-700 px-2 py-[1px] rounded-lg">{topic.progress}
+                                            امتیاز/درصد پیشرفت</span>
                                         <!--                                        <div class="font-bold text-[8px] bg-blue-200 text-blue-700 px-2 py-[1px] rounded-lg">-->
                                         <!--                                            3 عنوان اضافه شده-->
                                         <!--                                        </div>-->
@@ -633,7 +634,7 @@
                                     <div class="flex flex-col py-2 px-2 gap-2">
                                         <div class="flex flex-col gap-2 text-sm">
                                             <div class="flex flex-row items-center">
-                                                <label for="selected_topic_total_progress">درصد
+                                                <label for="selected_topic_total_progress">امتیاز/درصد
                                                     پیشرفت {topic_on_modify.title}</label>
                                                 <span class="mr-auto">{topic_on_modify.progress}/100</span>
                                             </div>
@@ -717,8 +718,9 @@
                                         {#each grouped_items[subject_items] as subject_item}
                                             <div class="relative bg-blue-300 hover:bg-blue-400 text-white cursor-pointer rounded-sm text-xs sm:text-md flex flex-col">
                                                 <div class="z-10 absolute left-2 -top-3 flex flex-row">
-                                                <span class="font-bold text-[8px] bg-blue-500 text-white px-2 py-[1px] rounded-lg">{subject_item.progress}
-                                                    درصد پیشرفت</span>
+                                                <span style="direction: ltr"
+                                                        class="font-bold text-[8px] bg-blue-500 text-white px-2 py-[1px] rounded-lg">{subject_item.progress}
+                                                    امتیاز/درصد پیشرفت</span>
                                                 </div>
                                                 <div class="flex flex-row h-16 items-center">
                                                     <div class="flex flex-row items-center grow">
