@@ -62,6 +62,9 @@
             topicId = selected_topic.id;
         else return;
 
+        console.log(topicId);
+        console.log(unitId);
+
         const req = await fetch(`${END_POINT}/api/subject/get_topic_subjects?topicId=${topicId}&unitId=${unitId}`)
         const res = await req.json();
         console.log(res);
