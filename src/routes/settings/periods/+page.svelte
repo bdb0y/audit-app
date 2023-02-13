@@ -42,6 +42,7 @@
     });
 
     onMount(() => {
+        the_unit_id = "ZPI8fNsTm1zbxJQHOnd1";
         if (!the_unit_id || the_unit_id === -1 || the_unit_id === 1003) {
             goto('/', {replaceState: false});
         }
