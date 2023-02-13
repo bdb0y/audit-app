@@ -64,6 +64,7 @@
 
         const req = await fetch(`${END_POINT}/api/subject/get_topic_subjects?topicId=${topicId}&unitId=${unitId}`)
         const res = await req.json();
+        console.log(res);
 
         if (req.ok) {
             console.log(res);
