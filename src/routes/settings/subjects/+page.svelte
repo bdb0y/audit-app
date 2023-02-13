@@ -35,16 +35,17 @@
 
     async function getSubjects() {
         const req = await fetch(`${END_POINT}/api/subject/get_subjects`);
-        // try {
-            const res = await req.json();
+        try {
+        const resj = await req.json();
+            const res = JSON.parse(resj);
 
             if (req.ok) {
                 return res;
             } else {
             }
-        // } catch (e){
-        //
-        // }
+        } catch (e){
+
+        }
     }
 
     let subjects;
