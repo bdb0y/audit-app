@@ -821,23 +821,28 @@
                                     <td scope="row"
                                         class="py-6 px-6 whitespace-nowrap font-medium text-gray-900 ">
                                         <!--{subject.title.length > 30 ? `${subject.title.substring(0, 30)}...` : subject.title}-->
-                                        {subject.title.length > 30 ? `${subject.title.substring(0, 30)}...` : subject.title}
+                                        {subject.title}
                                     </td>
                                     <td class="py-6 px-6 whitespace-nowrap flex justify-center">
-                                        {subject.description.length > 30 ? `${subject.description.substring(0, 30)}...` : subject.description}
+                                        <!--{subject.description.length > 30 ? `${subject.description.substring(0, 30)}...` : subject.description}-->
+                                        {subject.description}
                                     </td>
                                     <td class="py-6 px-6 whitespace-nowrap">
-                                        {subject.periodTitle.length > 30 ? `${subject.periodTitle.substring(0, 30)}...` : subject.periodTitle}
+                                        <!--{subject.periodTitle.length > 30 ? `${subject.periodTitle.substring(0, 30)}...` : subject.periodTitle}-->
+                                        {subject.periodTitle}
                                     </td>
                                     <td class="py-6 px-6 whitespace-nowrap">
-                                        {subject.topicTitle.length > 30 ? `${subject.topicTitle.substring(0, 30)}...` : subject.topicTitle}
+                                        <!--{subject.topicTitle.length > 30 ? `${subject.topicTitle.substring(0, 30)}...` : subject.topicTitle}-->
+                                        {subject.topicTitle}
                                     </td>
                                     <td class="py-6 px-6 whitespace-nowrap">
-                                        {subject.category.length > 30 ? `${subject.category.substring(0, 30)}...` : subject.category}
+                                        <!--{subject.category.length > 30 ? `${subject.category.substring(0, 30)}...` : subject.category}-->
+                                        {subject.category}
                                     </td>
                                     <td class="py-6 px-6 whitespace-nowrap">
                                         <div style="direction: ltr">
-                                            {subject.units.length > 3 ? subject.units.map(u => u.unitId).join(', ') + ',...' : subject.units.map(u => u.unitId).join(', ')}
+                                            <!--{subject.units.length > 3 ? subject.units.map(u => u.unitId).join(', ') + ',...' : subject.units.map(u => u.unitId).join(', ')}-->
+                                            {subject.units}
                                         </div>
                                         <!--                                        <div>-->
                                         <!--{#each subject.units as unit}-->
