@@ -624,14 +624,14 @@
                             </div>
                             <div class="px-2 text-left pb-2">
                                 {#if !subject_on_modify.locked}
-                                    <button on:click={() => confirmSubject(subject_on_modify.id, subject_on_modify.unitId)}
-                                            class="{is_modify_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_modify_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">
-                                        تایید
-                                    </button>
                                     <button disabled={!is_modify_form_complete}
                                             on:click={() => modifySubject()}
                                             class="{is_modify_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_modify_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">
                                         ثبت
+                                    </button>
+                                    <button on:click={() => confirmSubject(subject_on_modify.id, subject_on_modify.unitId)}
+                                            class="{is_modify_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_modify_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">
+                                        تایید
                                     </button>
                                 {:else}
                                     <button on:click={() => takeBackConfirmSubject(subject_on_modify.id, subject_on_modify.unitId)}
@@ -839,13 +839,13 @@
                                         </div>
                                         <div class="flex flex-row gap-2">
                                             {#if !topic.locked}
-                                                <button on:click={() => confirmTopic(topic.id, selected_unit.id)}
-                                                        class="mr-auto bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm  text-xs sm:text-md">
-                                                    تایید
-                                                </button>
                                                 <button on:click={() => submitTopicProgress()}
-                                                        class="bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm  text-xs sm:text-md">
+                                                        class="mr-auto bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm  text-xs sm:text-md">
                                                     ثبت
+                                                </button>
+                                                <button on:click={() => confirmTopic(topic.id, selected_unit.id)}
+                                                        class="bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm  text-xs sm:text-md">
+                                                    تایید
                                                 </button>
                                             {:else}
                                                 <button on:click={() => takeBackConfirmTopic(topic.id, selected_unit.id)}
@@ -924,7 +924,7 @@
                                     {#if grouped_items[subject_items].length > 0}
                                         {#each grouped_items[subject_items] as subject_item}
                                             <div style="background-color: #58D9EF"
-                                                 class=" text-white cursor-pointer rounded-sm text-xs sm:text-md flex flex-col">
+                                                 class="text-black cursor-pointer rounded-sm text-xs sm:text-md flex flex-col">
                                                 <div class="flex flex-row grow relative">
                                                     <div class="z-10 absolute left-2 -top-3 flex flex-row">
                                                 <span style="direction: ltr;background-color: #357CA5"
@@ -933,9 +933,9 @@
                                                     </div>
                                                     <div class="flex flex-row items-center grow">
                                                         <div class="flex flex-row items-center grow py-2">
-                                                            <i class="bi {subject_item.locked ? 'bi-check-lg':'bi-file-text'} flex text-lg px-4 py-4 leading-5"></i>
+                                                            <i class="bi {subject_item.locked ? 'bi-check-lg':'bi-file-text'} flex text-lg px-4 py-4 leading-6"></i>
                                                             <!--                                                        <span>{subject_item.title.length > 50 ? `${subject_item.title.substring(0, 50)}...` : subject_item.title}</span>-->
-                                                            <span>{subject_item.title}</span>
+                                                            <span style="font-size: .8rem" class="text-justify leading-6">{subject_item.title}</span>
                                                         </div>
                                                         <!--{#if !subject_item.locked}-->
                                                             <i on:click={() => {
