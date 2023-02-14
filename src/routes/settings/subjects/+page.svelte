@@ -75,15 +75,9 @@
     }
 
     function getUnitTitle(unitdata, unitId) {
-        console.log('unist');
-        console.log(units);
-        console.log('end of unist')
         if (unitdata) {
-            console.log('units');
             for (let i = 0; i < unitdata.length; i++) {
-                console.log(unitdata[i]);
                 if (unitdata[i].id === unitId) {
-                    console.log(unitdata[i]);
                     return unitdata[i].title;
                 }
             }
@@ -284,13 +278,11 @@
         is_create_form_complete =
             subject_on_create
             && subject_on_create.title
-            && subject_on_create.description
             && subject_on_create.period
             && subject_on_create.topicId
             && subject_on_create.category
             && subject_on_create.units
             && subject_on_create.title.length > 0
-            && subject_on_create.description.length > 0
             && subject_on_create.period.length > 0
             && subject_on_create.topicId.length > 0
             && subject_on_create.category.length > 0
@@ -303,12 +295,10 @@
         is_modify_form_complete =
             subject_on_modify
             && subject_on_modify.title
-            && subject_on_modify.description
             && subject_on_modify.period
             && subject_on_modify.topicId
             && subject_on_modify.category
             && subject_on_modify.title.length > 0
-            && subject_on_modify.description.length > 0
             && subject_on_modify.period.length > 0
             && subject_on_modify.topicId.length > 0
             && subject_on_modify.category.length > 0;

@@ -312,10 +312,8 @@
         is_create_form_complete =
             subject_on_create
             && subject_on_create.title
-            && subject_on_create.description
             && subject_on_create.category
             && subject_on_create.title.length > 0
-            && subject_on_create.description.length > 0
             && subject_on_create.category.length > 0;
     }
 
@@ -325,10 +323,8 @@
         is_modify_form_complete =
             subject_on_modify
             && subject_on_modify.title
-            && subject_on_modify.description
             && subject_on_modify.category
             && subject_on_modify.title.length > 0
-            && subject_on_modify.description.length > 0
             && subject_on_modify.category.length > 0;
 
         console.log(is_modify_form_complete);
