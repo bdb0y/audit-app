@@ -280,9 +280,9 @@
             const resj = await req.json();
             try{
                 const res = JSON.parse(resj);
-                firstName = res.firstName;
-                lastName = res.lastName;
-                departmentName = res.departmentName;
+                sso_firstName.set(res.firstName);
+                sso_lastName.set(res.lastName);
+                sso_departmentName.set(res.departmentName);
                 console.log(resj);
             }catch (e){
 
