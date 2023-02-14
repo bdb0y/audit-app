@@ -229,16 +229,27 @@
 
     let opened_topic = undefined;
 
-    let firstName;
-    let lastName;
-    let workPlace;
-
-    import {gen_token} from "../stores.js";
+    import {gen_token, sso_departmentName, sso_firstName, sso_lastName} from "../stores.js";
 
     let the_token;
+    let firstName;
+    let lastName;
+    let departmentName;
 
     gen_token.subscribe(value => {
         the_token = value;
+    })
+
+    sso_firstName.subscribe(value => {
+        firstName = value;
+    });
+
+    sso_lastName.subscribe(value => {
+        lastName = value;
+    });
+
+    sso_departmentName.subscribe(value => {
+        departmentName = value;
     })
 
     onMount(async () => {
@@ -271,7 +282,7 @@
                 const res = JSON.parse(resj);
                 firstName = res.firstName;
                 lastName = res.lastName;
-                workPlace = res.workPlaceSlugName;
+                departmentName = res.departmentName;
                 console.log(resj);
             }catch (e){
 
