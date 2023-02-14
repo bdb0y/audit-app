@@ -117,7 +117,8 @@
         description: '',
         progress: 0,
         weight: 0,
-        normalWeight: 0
+        normalWeight: 0,
+        comment: ''
     }
 
     let subject_on_modify = {
@@ -132,7 +133,8 @@
         weight: 0,
         normalWeight: 0,
         category: '',
-        isAdmin: false
+        isAdmin: false,
+        comment: ''
     }
 
     let topic_on_modify = {
@@ -154,6 +156,7 @@
         form_body.append('weight', subject_on_create.weight);
         form_body.append('normalWeight', subject_on_create.normalWeight);
         form_body.append('category', selected_category.id);
+        form_body.append('comment', subject_on_create.comment);
 
         const req = await fetch(`${END_POINT}/api/subject/create_subject`, {
             method: 'POST',
@@ -181,7 +184,8 @@
             progress: 0,
             weight: 0,
             normalWeight: 0,
-            category: subject_on_create.category
+            category: subject_on_create.category,
+            comment: ''
         };
 
         // on_new_subject = false;
@@ -199,6 +203,7 @@
         form_body.append('weight', subject_on_modify.weight);
         form_body.append('normalWeight', subject_on_modify.normalWeight);
         form_body.append('category', subject_on_modify.category);
+        form_body.append('comment', subject_on_modify.comment);
 
         const req = await fetch(`${END_POINT}/api/subject/update_subject`, {
             method: 'POST',
@@ -224,16 +229,55 @@
 
     let opened_topic = undefined;
 
+    let firstName;
+    let lastName;
+    let workPlace;
+
+    import {gen_token} from "../../../stores.js";
+
+    let the_token;
+
+    gen_token.subscribe(value => {
+        the_token = value;
+    })
+
     onMount(async () => {
         let token = $page.url.searchParams;
         if (token.has("token")) {
             console.log('here is the token')
             console.log(token.has('token') ? token.get('token') : 'not available');
+            gen_token.set(token?.get('token'));
+            console.log(token.has('personCode') ? token.get('personCode') : 'not available');
+            console.log(token.has('workPlaceSlug') ? token.get('workPlaceSlug') : 'not available');
+            console.log(token.has('departmentSlug') ? token.get('departmentSlug') : 'not available');
             await goto('/', {replaceState: false})
         }
         await getPeriods();
         // topics = getTopics();
     });
+
+    $: {
+        if (the_token && the_token !== -1) {
+            await getInformation();
+        }
+    }
+
+    async function getInformation() {
+        if (the_token) {
+
+            const req = await fetch(`${END_POINT}/api/personnel/get_information?token=${the_token}`)
+            const resj = await req.json();
+            try{
+                const res = JSON.parse(resj);
+                firstName = res.firstName;
+                lastName = res.lastName;
+                workPlace = res.workPlaceSlugName;
+                console.log(resj);
+            }catch (e){
+
+            }
+        }
+    }
 
     async function submitTopicProgress() {
         const form_body = new FormData();
@@ -511,6 +555,12 @@
                                           id="selected_topic_description"
                                           class="border-2 border-gray-100 py-2 px-2 rounded-sm"></textarea>
                             </div>
+                            <div class="flex flex-col gap-2 text-sm">
+                                <label for="selected_topic_comment">نقطه نظر</label>
+                                <textarea bind:value={subject_on_create.comment}
+                                          id="selected_topic_comment"
+                                          class="border-2 border-gray-100 py-2 px-2 rounded-sm"></textarea>
+                            </div>
                             <div class="flex flex-row gap-2 text-sm">
                                 <!--                                <div class="flex flex-col gap-2 text-sm grow">-->
                                 <!--                                    <label for="selected_topic_weight">وزن موضوع</label>-->
@@ -612,12 +662,18 @@
                                 </div>
                             {/if}
                             <div class="flex flex-col gap-2 text-sm">
+                                <label for="mselected_topic_comment">نقطه نظر</label>
+                                <textarea bind:value={subject_on_create.comment}
+                                          id="mselected_topic_comment"
+                                          class="border-2 border-gray-100 py-2 px-2 rounded-sm"></textarea>
+                            </div>
+                            <div class="flex flex-col gap-2 text-sm">
                                 <div class="flex flex-row items-center">
                                     <label for="mselected_topic_progress">امتیاز/درصد پیشرفت</label>
                                     <span class="mr-auto">{subject_on_modify.progress}/100</span>
                                 </div>
                                 <input disabled={subject_on_modify.locked}
-                                        type="range" bind:value={subject_on_modify.progress} min=0 max=100
+                                       type="range" bind:value={subject_on_modify.progress} min=0 max=100
                                        id="mselected_topic_progress" class="py-2"
                                        placeholder="موضوع شماره یک"
                                        step="5"/>
@@ -793,7 +849,7 @@
                                             <span class="text-xs sm:text-md text-justify leading-5">{topic.title}</span>
                                         </div>
                                         <!--{#if !topic.locked}-->
-                                            <i on:click={()=> {
+                                        <i on:click={()=> {
                                         console.log('clicked on modification');
 
                                         topic_on_modify.id = topic.id;
@@ -809,7 +865,7 @@
                                         topic.is_opened = false;
                                         opened_topic = topic;
                                     }}
-                                               class="text-lg bi bi-pencil h-full px-4 flex hover:bg-blue-300 mr-auto items-center"></i>
+                                           class="text-lg bi bi-pencil h-full px-4 flex hover:bg-blue-300 mr-auto items-center"></i>
                                         <!--{/if}-->
                                         <i on:click={()=> {
                                         if (opened_topic !== undefined){
@@ -833,7 +889,7 @@
                                                 <span class="mr-auto">{topic_on_modify.progress}/100</span>
                                             </div>
                                             <input disabled={topic.locked}
-                                                    type="range" bind:value={topic_on_modify.progress} min=0 max=100
+                                                   type="range" bind:value={topic_on_modify.progress} min=0 max=100
                                                    id="selected_topic_total_progress" class="py-2"
                                                    step="5"/>
                                         </div>
@@ -935,10 +991,11 @@
                                                         <div class="flex flex-row items-center grow py-2">
                                                             <i class="bi {subject_item.locked ? 'bi-check-lg':'bi-file-text'} flex text-lg px-4 py-4 leading-6"></i>
                                                             <!--                                                        <span>{subject_item.title.length > 50 ? `${subject_item.title.substring(0, 50)}...` : subject_item.title}</span>-->
-                                                            <span style="font-size: .8rem" class="text-justify leading-6">{subject_item.title}</span>
+                                                            <span style="font-size: .8rem"
+                                                                  class="text-justify leading-6">{subject_item.title}</span>
                                                         </div>
                                                         <!--{#if !subject_item.locked}-->
-                                                            <i on:click={() => {
+                                                        <i on:click={() => {
                                                         on_modify_subject = true;
                                                         on_new_subject = false;
                                                         subject_on_modify.id = subject_item.id;
@@ -951,9 +1008,10 @@
                                                         subject_on_modify.category = subject_item.categoryId;
                                                         subject_on_modify.isAdmin = subject_item.isAdmin;
                                                         subject_on_modify.locked = subject_item.locked;
+                                                        subject_on_modify.comment = subject_item.comment;
                                                         getCategories();
                                                     }}
-                                                               class="bi bi bi-pencil flex mr-auto text-lg px-4 h-full items-center hover:bg-blue-200"></i>
+                                                           class="bi bi bi-pencil flex mr-auto text-lg px-4 h-full items-center hover:bg-blue-200"></i>
                                                         <!--{/if}-->
                                                         {#if !subject_item.isAdmin}
                                                             {#if !subject_item.locked}
