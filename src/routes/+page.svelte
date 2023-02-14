@@ -233,7 +233,7 @@
     let lastName;
     let workPlace;
 
-    import {gen_token} from "../../../stores.js";
+    import {gen_token} from "../stores.js";
 
     let the_token;
 
@@ -247,6 +247,7 @@
             console.log('here is the token')
             console.log(token.has('token') ? token.get('token') : 'not available');
             gen_token.set(token?.get('token'));
+            await getInformation();
             console.log(token.has('personCode') ? token.get('personCode') : 'not available');
             console.log(token.has('workPlaceSlug') ? token.get('workPlaceSlug') : 'not available');
             console.log(token.has('departmentSlug') ? token.get('departmentSlug') : 'not available');
@@ -255,12 +256,6 @@
         await getPeriods();
         // topics = getTopics();
     });
-
-    $: {
-        if (the_token && the_token !== -1) {
-            getInformation();
-        }
-    }
 
     async function getInformation() {
         if (the_token) {
