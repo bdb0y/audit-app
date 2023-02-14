@@ -258,7 +258,7 @@
 
     $: {
         if (the_token && the_token !== -1) {
-            await getInformation();
+            getInformation();
         }
     }
 
