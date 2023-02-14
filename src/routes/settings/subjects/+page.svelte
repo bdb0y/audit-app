@@ -862,7 +862,9 @@
                                             {#await units}
                                                 درحال بارگزاری
                                             {:then unitdata}
-                                                {subject.units.map(u => getUnitTitle(unitdata, u.unitId)).join(', ')}
+                                                <!--{#if subject.units}-->
+                                                    {subject.units?.map(u => getUnitTitle(unitdata, u.unitId)).join(', ')}
+                                                <!--{/if}-->
                                             {/await}
                                         </div>
                                         <!--                                        <div>-->
