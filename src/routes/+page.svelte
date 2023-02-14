@@ -20,6 +20,25 @@
         if (req.ok) {
             periods = res;
             selected_period = periods[0];
+            await getUnits();
+            // console.log(periods);
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+    }
+
+    let units;
+    let selected_unit;
+
+    async function getUnits() {
+        const req = await fetch(`${END_POINT}/api/unit/get_units`)
+        const res = await req.json();
+
+        if (req.ok) {
+            units = res;
+            selected_unit = units[0];
             // console.log(periods);
             // if (requests.length < 10)
             //     show_more_visible = false;
@@ -29,10 +48,11 @@
     }
 
     async function getTopics() {
-        if (selected_period) {
+        if (selected_period && selected_unit) {
             console.log(selected_period.id);
+            console.log(selected_unit.id);
 
-            const req = await fetch(`${END_POINT}/api/topic/get_topics?periodId=${selected_period.id}&unitId=${unitId}`)
+            const req = await fetch(`${END_POINT}/api/topic/get_topics?periodId=${selected_period.id}&unitId=${selected_unit.id}`)
             const res = await req.json();
 
             if (req.ok) {
@@ -66,7 +86,7 @@
         console.log(topicId);
         console.log(unitId);
 
-        const req = await fetch(`${END_POINT}/api/subject/get_topic_subjects?topicId=${topicId}&unitId=${unitId}`)
+        const req = await fetch(`${END_POINT}/api/subject/get_topic_subjects?topicId=${topicId}&unitId=${selected_unit.id}`)
         const res = await req.json();
         console.log(res);
 
@@ -106,6 +126,7 @@
         unitId,
         personnelId,
         title: '',
+        locked: false,
         description: '',
         progress: 0,
         weight: 0,
@@ -125,7 +146,7 @@
 
         const form_body = new FormData();
         form_body.append('topicId', subject_on_create.topicId);
-        form_body.append('unitId', subject_on_create.unitId);
+        form_body.append('unitId', selected_unit.id);
         form_body.append('personnelId', subject_on_create.personnelId);
         form_body.append('title', subject_on_create.title);
         form_body.append('description', subject_on_create.description);
@@ -217,7 +238,7 @@
     async function submitTopicProgress() {
         const form_body = new FormData();
         form_body.append('topicId', topic_on_modify.id);
-        form_body.append('unitId', unitId);
+        form_body.append('unitId', selected_unit.id);
         form_body.append('progress', topic_on_modify.progress);
 
         const req = await fetch(`${END_POINT}/api/topic/set_progress`, {
@@ -266,7 +287,7 @@
     }
 
     $: {
-        if (selected_period) {
+        if (selected_unit) {
             topics = getTopics();
             selected_topic = undefined;
         }
@@ -337,6 +358,106 @@
     }
 
     let on_delete = false;
+
+    async function confirmSubject(id, unitId) {
+        console.log(JSON.stringify(subject_on_create));
+
+        const form_body = new FormData();
+        form_body.append('subjectId', id);
+        form_body.append('unitId', unitId);
+
+        const req = await fetch(`${END_POINT}/api/subject/confirm`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            subjects = await getTopicSubjects();
+            console.log(subjects);
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+
+        on_modify_subject = false;
+    }
+
+    async function takeBackConfirmSubject(id, unitId) {
+
+        const form_body = new FormData();
+        form_body.append('subjectId', id);
+        form_body.append('unitId', unitId);
+
+        const req = await fetch(`${END_POINT}/api/subject/take_back_confirm`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            subjects = await getTopicSubjects();
+            console.log(subjects);
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+
+        on_modify_subject = false;
+    }
+
+    async function confirmTopic(id, unitId) {
+
+        console.log('topic id and unitId')
+        console.log(id);
+        console.log(unitId);
+
+        const form_body = new FormData();
+        form_body.append('topicId', id);
+        form_body.append('unitId', unitId);
+
+        const req = await fetch(`${END_POINT}/api/topic/confirm`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            topics = await getTopics();
+            console.log(topics);
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+    }
+
+    async function takeBackConfirmTopic(id, unitId) {
+        const form_body = new FormData();
+        form_body.append('topicId', id);
+        form_body.append('unitId', unitId);
+
+        const req = await fetch(`${END_POINT}/api/topic/take_back_confirm`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            console.log(res);
+            topics = await getTopics();
+            console.log(topics);
+            // if (requests.length < 10)
+            //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+    }
 
 
 </script>
@@ -490,25 +611,34 @@
                                               class="border-2 border-gray-100 py-2 px-2 rounded-sm"></textarea>
                                 </div>
                             {/if}
-                            <div class="flex flex-row gap-2 text-sm">
-
-                            </div>
                             <div class="flex flex-col gap-2 text-sm">
                                 <div class="flex flex-row items-center">
                                     <label for="mselected_topic_progress">امتیاز/درصد پیشرفت</label>
                                     <span class="mr-auto">{subject_on_modify.progress}/100</span>
                                 </div>
-                                <input type="range" bind:value={subject_on_modify.progress} min=0 max=100
+                                <input disabled={subject_on_modify.locked}
+                                        type="range" bind:value={subject_on_modify.progress} min=0 max=100
                                        id="mselected_topic_progress" class="py-2"
                                        placeholder="موضوع شماره یک"
                                        step="5"/>
                             </div>
                             <div class="px-2 text-left pb-2">
-                                <button disabled={!is_modify_form_complete}
-                                        on:click={() => modifySubject()}
-                                        class="{is_modify_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_modify_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">
-                                    ثبت
-                                </button>
+                                {#if !subject_on_modify.locked}
+                                    <button on:click={() => confirmSubject(subject_on_modify.id, subject_on_modify.unitId)}
+                                            class="{is_modify_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_modify_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">
+                                        تایید
+                                    </button>
+                                    <button disabled={!is_modify_form_complete}
+                                            on:click={() => modifySubject()}
+                                            class="{is_modify_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_modify_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">
+                                        ثبت
+                                    </button>
+                                {:else}
+                                    <button on:click={() => takeBackConfirmSubject(subject_on_modify.id, subject_on_modify.unitId)}
+                                            class="{is_modify_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_modify_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">
+                                        بازگشت از تایید
+                                    </button>
+                                {/if}
                                 <button on:click={() => {
                                     on_modify_subject = false;
                                 }}
@@ -598,6 +728,20 @@
                         <option>در حال بارگزاری</option>
                     </select>
                 {/if}
+                <span>واحد فعال</span>
+                {#if selected_unit}
+                    <select class="border-2 border-gray-100 w-full mb-4"
+                            bind:value={selected_unit}>
+                        {#each Array.from(units) as unit}
+                            <option value="{unit}" id="{unit}">{unit.title}</option>
+                        {/each}
+                    </select>
+                {:else}
+                    <select disabled
+                            class="border-2 border-gray-100 w-full mb-4 shimmer-effect text-gray-400">
+                        <option>در حال بارگزاری</option>
+                    </select>
+                {/if}
                 <h1 class="font-bold text-xs sm:text-md">موضوعات موجود در دوره</h1>
             </div>
             <hr/>
@@ -644,11 +788,11 @@
                                          topic.is_opened = false;
                                          topic.is_on_modify_topic = false;
                                     }} class="flex flex-row items-center grow py-2">
-                                            <i class="text-lg bi bi-file-text flex text-lg px-4 py-4"></i>
+                                            <i class="text-lg bi {topic.locked ? 'bi-check-lg':'bi-file-text'} flex text-lg px-4 py-4"></i>
                                             <!--                                        <span class="text-xs sm:text-md text-justify leading-5">{topic.title.length > 50 ? `${topic.title.substring(0, 50)}...` : topic.title}</span>-->
                                             <span class="text-xs sm:text-md text-justify leading-5">{topic.title}</span>
                                         </div>
-                                        {#if !topic.locked}
+                                        <!--{#if !topic.locked}-->
                                             <i on:click={()=> {
                                         console.log('clicked on modification');
 
@@ -666,7 +810,7 @@
                                         opened_topic = topic;
                                     }}
                                                class="text-lg bi bi-pencil h-full px-4 flex hover:bg-blue-300 mr-auto items-center"></i>
-                                        {/if}
+                                        <!--{/if}-->
                                         <i on:click={()=> {
                                         if (opened_topic !== undefined){
                                             opened_topic.is_opened = false;
@@ -688,15 +832,27 @@
                                                     پیشرفت {topic_on_modify.title}</label>
                                                 <span class="mr-auto">{topic_on_modify.progress}/100</span>
                                             </div>
-                                            <input type="range" bind:value={topic_on_modify.progress} min=0 max=100
+                                            <input disabled={topic.locked}
+                                                    type="range" bind:value={topic_on_modify.progress} min=0 max=100
                                                    id="selected_topic_total_progress" class="py-2"
                                                    step="5"/>
                                         </div>
                                         <div class="flex flex-row gap-2">
-                                            <button on:click={() => submitTopicProgress()}
-                                                    class="bg-blue-500 text-white py-2 hover:bg-blue-600 rounded-sm grow text-xs sm:text-md">
-                                                ثبت
-                                            </button>
+                                            {#if !topic.locked}
+                                                <button on:click={() => confirmTopic(topic.id, selected_unit.id)}
+                                                        class="mr-auto bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm  text-xs sm:text-md">
+                                                    تایید
+                                                </button>
+                                                <button on:click={() => submitTopicProgress()}
+                                                        class="bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm  text-xs sm:text-md">
+                                                    ثبت
+                                                </button>
+                                            {:else}
+                                                <button on:click={() => takeBackConfirmTopic(topic.id, selected_unit.id)}
+                                                        class="mr-auto bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm  text-xs sm:text-md">
+                                                    بازگشت از تایید
+                                                </button>
+                                            {/if}
                                             <button on:click={() => {
                                                 topic.is_on_modify_topic = false;
                                             }}
@@ -777,11 +933,11 @@
                                                     </div>
                                                     <div class="flex flex-row items-center grow">
                                                         <div class="flex flex-row items-center grow py-2">
-                                                            <i class="bi bi-file-text flex text-lg px-4 py-4 leading-5"></i>
+                                                            <i class="bi {subject_item.locked ? 'bi-check-lg':'bi-file-text'} flex text-lg px-4 py-4 leading-5"></i>
                                                             <!--                                                        <span>{subject_item.title.length > 50 ? `${subject_item.title.substring(0, 50)}...` : subject_item.title}</span>-->
                                                             <span>{subject_item.title}</span>
                                                         </div>
-                                                        {#if !subject_item.locked}
+                                                        <!--{#if !subject_item.locked}-->
                                                             <i on:click={() => {
                                                         on_modify_subject = true;
                                                         on_new_subject = false;
@@ -794,10 +950,11 @@
                                                         subject_on_modify.progress = subject_item.progress;
                                                         subject_on_modify.category = subject_item.categoryId;
                                                         subject_on_modify.isAdmin = subject_item.isAdmin;
+                                                        subject_on_modify.locked = subject_item.locked;
                                                         getCategories();
                                                     }}
                                                                class="bi bi bi-pencil flex mr-auto text-lg px-4 h-full items-center hover:bg-blue-200"></i>
-                                                        {/if}
+                                                        <!--{/if}-->
                                                         {#if !subject_item.isAdmin}
                                                             {#if !subject_item.locked}
                                                                 <i on:click={() => {
