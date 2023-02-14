@@ -51,7 +51,8 @@
 
     let subjects;
 
-    let unitId = "SNvkIXRTy42g4ZrlEZcP";
+    // let unitId = "SNvkIXRTy42g4ZrlEZcP";
+    let unitId = "1001";
 
     let personnelId = 299212;
 
@@ -771,20 +772,21 @@
                                     {#if grouped_items[subject_items].length > 0}
                                         {#each grouped_items[subject_items] as subject_item}
                                             <div style="background-color: #58D9EF"
-                                                 class="relative text-white cursor-pointer rounded-sm text-xs sm:text-md flex flex-col">
-                                                <div class="z-10 absolute left-2 -top-3 flex flex-row">
+                                                 class=" text-white cursor-pointer rounded-sm text-xs sm:text-md flex flex-col">
+                                                <div class="flex flex-row grow relative">
+                                                    <div class="z-10 absolute left-2 -top-3 flex flex-row">
                                                 <span style="direction: ltr;background-color: #357CA5"
                                                       class="font-bold text-[8px] text-white px-2 py-[1px] rounded-lg">{subject_item.progress}
                                                     امتیاز/درصد پیشرفت</span>
-                                                </div>
-                                                <div class="flex flex-row h-16 items-center">
-                                                    <div class="flex flex-row items-center grow">
-                                                        <i class="bi bi-file-text flex text-lg px-4 py-4 leading-5"></i>
-                                                        <!--                                                        <span>{subject_item.title.length > 50 ? `${subject_item.title.substring(0, 50)}...` : subject_item.title}</span>-->
-                                                        <span>{subject_item.title}</span>
                                                     </div>
-                                                    {#if !subject_item.locked}
-                                                        <i on:click={() => {
+                                                    <div class="flex flex-row items-center grow">
+                                                        <div class="flex flex-row items-center grow py-2">
+                                                            <i class="bi bi-file-text flex text-lg px-4 py-4 leading-5"></i>
+                                                            <!--                                                        <span>{subject_item.title.length > 50 ? `${subject_item.title.substring(0, 50)}...` : subject_item.title}</span>-->
+                                                            <span>{subject_item.title}</span>
+                                                        </div>
+                                                        {#if !subject_item.locked}
+                                                            <i on:click={() => {
                                                         on_modify_subject = true;
                                                         on_new_subject = false;
                                                         subject_on_modify.id = subject_item.id;
@@ -798,30 +800,31 @@
                                                         subject_on_modify.isAdmin = subject_item.isAdmin;
                                                         getCategories();
                                                     }}
-                                                           class="bi bi bi-pencil flex mr-auto text-lg px-4 h-full items-center hover:bg-blue-200"></i>
-                                                    {/if}
-                                                    {#if !subject_item.isAdmin}
-                                                        {#if !subject_item.locked}
-                                                            <i on:click={() => {
+                                                               class="bi bi bi-pencil flex mr-auto text-lg px-4 h-full items-center hover:bg-blue-200"></i>
+                                                        {/if}
+                                                        {#if !subject_item.isAdmin}
+                                                            {#if !subject_item.locked}
+                                                                <i on:click={() => {
                                                                on_delete = true;
                                                                on_modify_subject = false;
                                                                on_new_subject = false;
                                                                subject_on_delete.id = subject_item.id;
                                                         }}
-                                                               class="bi bi bi-trash flex text-lg px-4 h-full items-center hover:bg-blue-200"></i>
+                                                                   class="bi bi bi-trash flex text-lg px-4 h-full items-center hover:bg-blue-200"></i>
+                                                            {/if}
                                                         {/if}
-                                                    {/if}
-                                                    {#if subject_item.attachments}
-                                                        <i on:click={() => {
+                                                        {#if subject_item.attachments}
+                                                            <i on:click={() => {
                                                             on_new_subject = false;
                                                             on_modify_subject = false;
                                                             on_show_documents = true;
                                                             subject_on_show_documents.attachments = JSON.parse(subject_item.attachments)
                                                         }}
-                                                           class="bi bi bi-cloud-download flex text-lg px-4 h-full items-center hover:bg-blue-200"></i>
-                                                    {/if}
-                                                    <i on:click={()=> subject_item.is_opened = !subject_item.is_opened}
-                                                       class="bi bi bi-justify-right flex text-lg px-4 h-full items-center hover:bg-blue-200"></i>
+                                                               class="bi bi bi-cloud-download flex text-lg px-4 h-full items-center hover:bg-blue-200"></i>
+                                                        {/if}
+                                                        <i on:click={()=> subject_item.is_opened = !subject_item.is_opened}
+                                                           class="bi bi bi-justify-right flex text-lg px-4 h-full items-center hover:bg-blue-200"></i>
+                                                    </div>
                                                 </div>
                                                 {#if subject_item.is_opened }
                                                     <div class="flex flex-col p-2 bg-slate-50">

@@ -36,14 +36,14 @@
     async function getSubjects() {
         const req = await fetch(`${END_POINT}/api/subject/get_subjects`);
         try {
-        const resj = await req.json();
+            const resj = await req.json();
             const res = JSON.parse(resj);
 
             if (req.ok) {
                 return res;
             } else {
             }
-        } catch (e){
+        } catch (e) {
 
         }
     }
@@ -72,6 +72,23 @@
             return res;
         } else {
         }
+    }
+
+    function getUnitTitle(unitdata, unitId) {
+        console.log('unist');
+        console.log(units);
+        console.log('end of unist')
+        if (unitdata) {
+            console.log('units');
+            for (let i = 0; i < unitdata.length; i++) {
+                console.log(unitdata[i]);
+                if (unitdata[i].id === unitId) {
+                    console.log(unitdata[i]);
+                    return unitdata[i].title;
+                }
+            }
+        }
+        return unitId;
     }
 
     let periods;
@@ -819,30 +836,34 @@
                                 <tr
                                         class="hover:cursor-pointer even:bg-gray-50 text-center bg-white hover:bg-gray-50 ">
                                     <td scope="row"
-                                        class="py-6 px-6 whitespace-nowrap font-medium text-gray-900 ">
+                                        class="py-6 px-6 font-medium text-gray-900 ">
                                         <!--{subject.title.length > 30 ? `${subject.title.substring(0, 30)}...` : subject.title}-->
                                         {subject.title}
                                     </td>
-                                    <td class="py-6 px-6 whitespace-nowrap flex justify-center">
+                                    <td class="py-6 px-6 flex justify-center">
                                         <!--{subject.description.length > 30 ? `${subject.description.substring(0, 30)}...` : subject.description}-->
                                         {subject.description}
                                     </td>
-                                    <td class="py-6 px-6 whitespace-nowrap">
+                                    <td class="py-6 px-6">
                                         <!--{subject.periodTitle.length > 30 ? `${subject.periodTitle.substring(0, 30)}...` : subject.periodTitle}-->
                                         {subject.periodTitle}
                                     </td>
-                                    <td class="py-6 px-6 whitespace-nowrap">
+                                    <td class="py-6 px-6">
                                         <!--{subject.topicTitle.length > 30 ? `${subject.topicTitle.substring(0, 30)}...` : subject.topicTitle}-->
                                         {subject.topicTitle}
                                     </td>
-                                    <td class="py-6 px-6 whitespace-nowrap">
+                                    <td class="py-6 px-6">
                                         <!--{subject.category.length > 30 ? `${subject.category.substring(0, 30)}...` : subject.category}-->
                                         {subject.category}
                                     </td>
-                                    <td class="py-6 px-6 whitespace-nowrap">
+                                    <td class="py-6 px-6">
                                         <div style="direction: ltr">
                                             <!--{subject.units.length > 3 ? subject.units.map(u => u.unitId).join(', ') + ',...' : subject.units.map(u => u.unitId).join(', ')}-->
-                                            {subject.units}
+                                            {#await units}
+                                                درحال بارگزاری
+                                            {:then unitdata}
+                                                {subject.units.map(u => getUnitTitle(unitdata, u.unitId)).join(', ')}
+                                            {/await}
                                         </div>
                                         <!--                                        <div>-->
                                         <!--{#each subject.units as unit}-->
