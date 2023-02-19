@@ -26,10 +26,12 @@
                 console.log('not admin');
                 if (workPlaceSlug === 'wJCPQ8MALTlDMoYFS4Gt'){
                     selected_unit = departmentId;
+                    console.log(departmentId);
                     console.log('located in tehran');
                 }else {
                     console.log('not located in tehran');
                     selected_unit = workPlaceSlug;
+                    console.log(workPlaceSlug)
                 }
                 console.log('this is the unit');
                 console.log(selected_unit);
