@@ -31,6 +31,8 @@
                     console.log('not located in tehran');
                     selected_unit = workPlaceSlug;
                 }
+                console.log('this is the unit');
+                console.log(selected_unit);
                 topics = getTopics();
                 console.log(topics);
                 selected_topic = undefined;
