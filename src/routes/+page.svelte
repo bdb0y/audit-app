@@ -23,9 +23,12 @@
             if (personnelId === '987331')
                 await getUnits();
             else {
+                console.log('not admin');
                 if (workPlaceSlug === 'wJCPQ8MALTlDMoYFS4Gt'){
                     selected_unit = departmentId;
+                    console.log('located in tehran');
                 }else {
+                    console.log('not located in tehran');
                     selected_unit = workPlaceSlug;
                 }
             }
@@ -381,6 +384,7 @@
     $: {
         if (selected_unit) {
             topics = getTopics();
+            console.log(topics);
             selected_topic = undefined;
         }
     }
