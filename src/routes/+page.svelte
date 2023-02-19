@@ -25,12 +25,12 @@
             else {
                 console.log('not admin');
                 if (workPlaceSlug === 'wJCPQ8MALTlDMoYFS4Gt'){
-                    selected_unit = departmentId;
+                    selected_unit.id = departmentId;
                     console.log(departmentId);
                     console.log('located in tehran');
                 }else {
                     console.log('not located in tehran');
-                    selected_unit = workPlaceSlug;
+                    selected_unit.id = workPlaceSlug;
                     console.log(workPlaceSlug)
                 }
                 console.log('this is the unit');
@@ -304,10 +304,6 @@
             console.log('here is the token')
             console.log(params.has('token') ? params.get('token') : 'not available');
             gen_token.set(params?.get('token'));
-            sso_departmentName.set(params?.get('departmentName'));
-            sso_departmentId.set(params?.get('departmentSlug'))
-            sso_workPlaceSlug.set(params?.get('workPlaceSlug'));
-            sso_workPlaceName.set(params?.get('workPlaceSlugName'));
             await goto('/', {replaceState: false})
         }
         await getPeriods();
