@@ -235,7 +235,8 @@
         sso_firstName,
         sso_lastName,
         sso_personCode,
-        sso_workPlaceSlug
+        sso_workPlaceSlug,
+        sso_workPlaceName
     } from "../stores.js";
 
     let the_token;
@@ -358,7 +359,6 @@
     import {fly, fade} from 'svelte/transition';
 
     import _ from 'lodash';
-    import sso_workPlaceName from "lodash";
 
     let grouped_items = {};
 
