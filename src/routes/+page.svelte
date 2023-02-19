@@ -304,6 +304,10 @@
             console.log('here is the token')
             console.log(params.has('token') ? params.get('token') : 'not available');
             gen_token.set(params?.get('token'));
+            sso_departmentName.set(params?.get('departmentName'));
+            sso_departmentId.set(params?.get('departmentSlug'))
+            sso_workPlaceSlug.set(params?.get('workPlaceSlug'));
+            sso_workPlaceName.set(params?.get('workPlaceSlugName'));
             await goto('/', {replaceState: false})
         }
         await getPeriods();
