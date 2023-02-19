@@ -1,4 +1,5 @@
 <script>
+
     function convert_date(date) {
         let full_date = new Date().toLocaleDateString('fa-IR', {
             // weekday: 'long',
@@ -11,7 +12,18 @@
         return full_date;
     }
 
-    import {is_sidebar_open} from "../stores.js";
+
+
+
+    import {
+        is_sidebar_open,
+        sso_workPlaceSlug,
+        gen_token,
+        sso_departmentName,
+        sso_firstName,
+        sso_lastName,
+        sso_workPlaceName
+    } from "../stores.js";
 
     let sidebar_opened;
 
@@ -19,16 +31,16 @@
         sidebar_opened = value;
     })
 
-    import {gen_token, sso_departmentName, sso_firstName, sso_lastName} from "../stores.js";
-
     let the_token;
     let firstName;
     let lastName;
     let departmentName;
+    let workPlaceSlug;
+    let workPlaceName;
 
     gen_token.subscribe(value => {
         the_token = value;
-    })
+    });
 
     sso_firstName.subscribe(value => {
         firstName = value;
@@ -40,7 +52,15 @@
 
     sso_departmentName.subscribe(value => {
         departmentName = value;
-    })
+    });
+
+    sso_workPlaceSlug.subscribe(value => {
+        workPlaceSlug = value;
+    });
+
+    sso_workPlaceName.subscribe(value => {
+        workPlaceName = value;
+    });
 
 </script>
 
@@ -53,7 +73,7 @@
             <span style="">{convert_date()}</span>
         </div>
         <div>
-            {firstName + ' ' + lastName} | {departmentName}
+            {firstName + ' ' + lastName} | {workPlaceSlug === 'wJCPQ8MALTlDMoYFS4Gt' ? departmentName : workPlaceName}
         </div>
     </div>
 </div>

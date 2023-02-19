@@ -241,6 +241,10 @@
 
 </script>
 
+<svelte:head>
+    <title>خدمات دریایی سینا | مدیریت موضوعات</title>
+</svelte:head>
+
 <div>
     <div class="px-2 py-2 text-gray-400 text-xs sm:text-md">
         <h1>پیمایش موضوع ها</h1>

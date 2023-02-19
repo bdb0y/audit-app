@@ -383,6 +383,10 @@
 
 </script>
 
+<svelte:head>
+    <title>خدمات دریایی سینا | مدیریت عناوین</title>
+</svelte:head>
+
 <div class="">
     {#if on_new_subject || on_modify_subject || on_upload_doc}
         <div class="bg-black/60 backdrop-opacity-50 w-screen h-screen fixed top-0 right-0 z-20">

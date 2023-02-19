@@ -14,7 +14,14 @@ module.exports = {
       '1/2': '50%',
       '16': '1rem'
     },
-    extend: {},
+    extend: {
+      colors: {
+        'satcom-a': '#55BAD7',
+        'satcom-b': '#58D9EF',
+        'self-subject': '#02edd9',
+        'yellow-counter': '#d1b209'
+      }
+    },
   },
   plugins: [],
 }

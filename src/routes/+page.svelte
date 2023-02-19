@@ -229,7 +229,14 @@
 
     let opened_topic = undefined;
 
-    import {gen_token, sso_departmentName, sso_firstName, sso_lastName} from "../stores.js";
+    import {
+        gen_token,
+        sso_departmentName,
+        sso_firstName,
+        sso_lastName,
+        sso_personCode,
+        sso_workPlaceSlug
+    } from "../stores.js";
 
     let the_token;
     let firstName;
@@ -253,14 +260,11 @@
     })
 
     onMount(async () => {
-        let token = $page.url.searchParams;
-        if (token.has("token")) {
+        let params = $page.url.searchParams;
+        if (params.has("token")) {
             console.log('here is the token')
-            console.log(token.has('token') ? token.get('token') : 'not available');
-            gen_token.set(token?.get('token'));
-            console.log(token.has('personCode') ? token.get('personCode') : 'not available');
-            console.log(token.has('workPlaceSlug') ? token.get('workPlaceSlug') : 'not available');
-            console.log(token.has('departmentSlug') ? token.get('departmentSlug') : 'not available');
+            console.log(params.has('token') ? params.get('token') : 'not available');
+            gen_token.set(params?.get('token'));
             await goto('/', {replaceState: false})
         }
         await getPeriods();
@@ -278,13 +282,16 @@
 
             const req = await fetch(`${END_POINT}/api/personnel/get_information?token=${the_token}`)
             const resj = await req.json();
-            try{
+            try {
                 const res = JSON.parse(resj);
                 sso_firstName.set(res.firstName);
                 sso_lastName.set(res.lastName);
                 sso_departmentName.set(res.departmentName);
+                sso_workPlaceSlug.set(res.workPlaceSlug);
+                sso_workPlaceName.set(res.workPlaceSlugName);
+                sso_personCode.set(res.personCode);
                 console.log(resj);
-            }catch (e){
+            } catch (e) {
 
             }
         }
@@ -351,6 +358,7 @@
     import {fly, fade} from 'svelte/transition';
 
     import _ from 'lodash';
+    import sso_workPlaceName from "lodash";
 
     let grouped_items = {};
 
@@ -517,6 +525,9 @@
 
 </script>
 
+<svelte:head>
+    <title>خدمات دریایی سینا | مدیریت موضوعات</title>
+</svelte:head>
 
 <div class="bg-gray-100 overflow-hidden relative">
     {#if on_new_subject || on_modify_subject || on_show_documents || on_delete}
@@ -555,10 +566,10 @@
                             </div>
                             <div class="flex flex-col gap-2 text-sm">
                                 <label for="selected_topic_title">موضوع</label>
-                                <input bind:value={subject_on_create.title}
-                                       id="selected_topic_title"
-                                       class="border-2 border-gray-100 py-2 px-2 rounded-sm"
-                                       type="text" placeholder="موضوع شماره یک"/>
+                                <textarea bind:value={subject_on_create.title}
+                                          id="selected_topic_title"
+                                          class="border-2 border-gray-100 py-2 px-2 rounded-sm"
+                                          type="text" placeholder="موضوع شماره یک"></textarea>
                             </div>
                             <div class="flex flex-col gap-2 text-sm">
                                 <label for="selected_topic_description">توضیحات</label>
@@ -658,11 +669,11 @@
                                 </div>
                                 <div class="flex flex-col gap-2 text-sm">
                                     <label for="mselected_topic_title">موضوع</label>
-                                    <input disabled={subject_on_modify.isAdmin}
-                                           bind:value={subject_on_modify.title}
-                                           id="mselected_topic_title"
-                                           class="border-2 border-gray-100 py-2 px-2 rounded-sm"
-                                           type="text" placeholder="موضوع شماره یک"/>
+                                    <textarea disabled={subject_on_modify.isAdmin}
+                                              bind:value={subject_on_modify.title}
+                                              id="mselected_topic_title"
+                                              class="border-2 border-gray-100 py-2 px-2 rounded-sm"
+                                              type="text" placeholder="موضوع شماره یک"></textarea>
                                 </div>
                                 <div class="flex flex-col gap-2 text-sm">
                                     <label for="mselected_topic_description">توضیحات</label>
@@ -674,7 +685,7 @@
                             {/if}
                             <div class="flex flex-col gap-2 text-sm">
                                 <label for="mselected_topic_comment">نقطه نظر</label>
-                                <textarea bind:value={subject_on_create.comment}
+                                <textarea bind:value={subject_on_modify.comment}
                                           id="mselected_topic_comment"
                                           class="border-2 border-gray-100 py-2 px-2 rounded-sm"></textarea>
                             </div>
@@ -833,12 +844,12 @@
                                 subject_on_create.topicId = topic.id;
                                 subjects = await getTopicSubjects();
                             }}
-                                 class="rounded-sm text-sm flex flex-col gap-2 text-xs sm:text-md">
-                                <div in:fly="{{ y: -50, duration: 200 }}" style="background-color: #55BAD7;"
+                                 class="rounded-sm text-sm flex flex-col text-xs sm:text-md odd:bg-satcom-a even:bg-satcom-b">
+                                <div in:fly="{{ y: -50, duration: 200 }}"
                                      class="flex flex-row cursor-pointer text-white relative">
                                     <div class="z-10 absolute left-2 -top-3 flex flex-row gap-2">
-                                        <span style="direction: ltr;background-color: #357CA5"
-                                              class="font-bold text-[8px] text-white px-2 py-[1px] rounded-lg">{topic.progress}
+                                        <span style="direction: ltr"
+                                              class="bg-yellow-counter font-bold text-[8px] sm:text-xs text-white px-2 py-[1px] rounded-lg">{topic.progress}
                                             امتیاز/درصد پیشرفت</span>
                                         <!--                                        <div class="font-bold text-[8px] bg-blue-200 text-blue-700 px-2 py-[1px] rounded-lg">-->
                                         <!--                                            3 عنوان اضافه شده-->
@@ -892,7 +903,7 @@
                                     </div>
                                 </div>
                                 {#if topic.is_on_modify_topic}
-                                    <div class="flex flex-col py-2 px-2 gap-2">
+                                    <div class="flex flex-col gap-2 bg-slate-50 px-4 py-3">
                                         <div class="flex flex-col gap-2 text-sm">
                                             <div class="flex flex-row items-center">
                                                 <label for="selected_topic_total_progress">امتیاز/درصد
@@ -962,15 +973,17 @@
             {#if selected_topic}
                 <div class="px-2 py-2 flex flex-row items-center gap-2">
                     <h1 class="font-bold text-xs sm:text-md text-justify">عناوین ثبت شده در {selected_topic.title}</h1>
-                    <button disabled={on_new_subject}
-                            on:click={() => {
+                    {#if !selected_topic.locked}
+                        <button disabled={on_new_subject}
+                                on:click={() => {
                             on_new_subject = !on_new_subject;
                             on_modify_subject = false;
                             getCategories();
                         }}
-                            class="text-xs text-blue-700 bg-blue-200 hover:bg-blue-100 whitespace-nowrap px-2 py-2 rounded-sm mr-auto">
-                        عنوان جدید
-                    </button>
+                                class="text-xs text-blue-700 bg-blue-200 hover:bg-blue-100 whitespace-nowrap px-2 py-2 rounded-sm mr-auto">
+                            عنوان جدید
+                        </button>
+                    {/if}
                 </div>
                 <hr/>
                 <div class="flex flex-col py-2 gap-2">
@@ -990,14 +1003,15 @@
                                 <div class="py-2 px-2 flex flex-col gap-4">
                                     {#if grouped_items[subject_items].length > 0}
                                         {#each grouped_items[subject_items] as subject_item}
-                                            <div style="background-color: #58D9EF"
-                                                 class="text-black cursor-pointer rounded-sm text-xs sm:text-md flex flex-col">
+                                            <div class="text-black {subject_item.isAdmin ? 'bg-satcom-b':'bg-self-subject'} cursor-pointer rounded-sm text-xs sm:text-md flex flex-col">
                                                 <div class="flex flex-row grow relative">
-                                                    <div class="z-10 absolute left-2 -top-3 flex flex-row">
-                                                <span style="direction: ltr;background-color: #357CA5"
-                                                      class="font-bold text-[8px] text-white px-2 py-[1px] rounded-lg">{subject_item.progress}
-                                                    امتیاز/درصد پیشرفت</span>
-                                                    </div>
+                                                    {#if subject_item.progress > 0}
+                                                        <div class="z-10 absolute left-2 -top-3 flex flex-row">
+                                                        <span style="direction: ltr"
+                                                              class="bg-yellow-counter font-bold text-[8px] sm:text-xs text-white px-2 py-[1px] rounded-lg">{subject_item.progress}
+                                                            امتیاز/درصد پیشرفت</span>
+                                                        </div>
+                                                    {/if}
                                                     <div class="flex flex-row items-center grow">
                                                         <div class="flex flex-row items-center grow py-2">
                                                             <i class="bi {subject_item.locked ? 'bi-check-lg':'bi-file-text'} flex text-lg px-4 py-4 leading-6"></i>
@@ -1005,34 +1019,35 @@
                                                             <span style="font-size: .8rem"
                                                                   class="text-justify leading-6">{subject_item.title}</span>
                                                         </div>
-                                                        <!--{#if !subject_item.locked}-->
-                                                        <i on:click={() => {
-                                                        on_modify_subject = true;
-                                                        on_new_subject = false;
-                                                        subject_on_modify.id = subject_item.id;
-                                                        subject_on_modify.topicId = subject_item.topicId;
-                                                        subject_on_modify.unitId = subject_item.unitId;
-                                                        subject_on_modify.personnelId = subject_item.personnelId;
-                                                        subject_on_modify.title = subject_item.title;
-                                                        subject_on_modify.description = subject_item.description;
-                                                        subject_on_modify.progress = subject_item.progress;
-                                                        subject_on_modify.category = subject_item.categoryId;
-                                                        subject_on_modify.isAdmin = subject_item.isAdmin;
-                                                        subject_on_modify.locked = subject_item.locked;
-                                                        subject_on_modify.comment = subject_item.comment;
-                                                        getCategories();
-                                                    }}
-                                                           class="bi bi bi-pencil flex mr-auto text-lg px-4 h-full items-center hover:bg-blue-200"></i>
-                                                        <!--{/if}-->
-                                                        {#if !subject_item.isAdmin}
-                                                            {#if !subject_item.locked}
-                                                                <i on:click={() => {
-                                                               on_delete = true;
-                                                               on_modify_subject = false;
-                                                               on_new_subject = false;
-                                                               subject_on_delete.id = subject_item.id;
-                                                        }}
-                                                                   class="bi bi bi-trash flex text-lg px-4 h-full items-center hover:bg-blue-200"></i>
+                                                        {#if !selected_topic.locked}
+                                                            <i on:click={() => {
+                                                                on_modify_subject = true;
+                                                                on_new_subject = false;
+                                                                subject_on_modify.id = subject_item.id;
+                                                                subject_on_modify.topicId = subject_item.topicId;
+                                                                subject_on_modify.unitId = subject_item.unitId;
+                                                                subject_on_modify.personnelId = subject_item.personnelId;
+                                                                subject_on_modify.title = subject_item.title;
+                                                                subject_on_modify.description = subject_item.description;
+                                                                subject_on_modify.progress = subject_item.progress;
+                                                                subject_on_modify.category = subject_item.categoryId;
+                                                                subject_on_modify.isAdmin = subject_item.isAdmin;
+                                                                subject_on_modify.locked = subject_item.locked;
+                                                                subject_on_modify.comment = subject_item.comment;
+                                                                getCategories();
+                                                            }}
+                                                               class="bi bi bi-pencil flex mr-auto text-lg px-4 h-full items-center hover:bg-blue-200"></i>
+
+                                                            {#if !subject_item.isAdmin}
+                                                                {#if !subject_item.locked}
+                                                                    <i on:click={() => {
+                                                                        on_delete = true;
+                                                                        on_modify_subject = false;
+                                                                        on_new_subject = false;
+                                                                        subject_on_delete.id = subject_item.id;
+                                                                    }}
+                                                                       class="bi bi bi-trash flex text-lg px-4 h-full items-center hover:bg-blue-200"></i>
+                                                                {/if}
                                                             {/if}
                                                         {/if}
                                                         {#if subject_item.attachments}

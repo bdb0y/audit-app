@@ -263,6 +263,10 @@
 
 </script>
 
+<svelte:head>
+    <title>خدمات دریایی سینا | مدیریت دوره ها</title>
+</svelte:head>
+
 <div>
     <div class="px-2 py-2 text-gray-400 text-xs sm:text-md">
         <h1>پیمایش دوره ها</h1>
