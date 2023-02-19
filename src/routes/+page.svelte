@@ -20,7 +20,15 @@
         if (req.ok) {
             periods = res;
             selected_period = periods[0];
-            await getUnits();
+            if (personnelId === '987331')
+                await getUnits();
+            else {
+                if (workPlaceSlug === 'wJCPQ8MALTlDMoYFS4Gt'){
+                    selected_unit = departmentId;
+                }else {
+                    selected_unit = workPlaceSlug;
+                }
+            }
             // console.log(periods);
             // if (requests.length < 10)
             //     show_more_visible = false;
@@ -74,7 +82,11 @@
     let unitId = "SNvkIXRTy42g4ZrlEZcP";
     // let unitId = "1001";
 
-    let personnelId = 299212;
+    let personnelId;
+
+    sso_personCode.subscribe(value => {
+        personnelId = value;
+    });
 
 
     async function getTopicSubjects() {
@@ -236,13 +248,17 @@
         sso_lastName,
         sso_personCode,
         sso_workPlaceSlug,
-        sso_workPlaceName
+        sso_workPlaceName,
+        sso_departmentId
     } from "../stores.js";
 
     let the_token;
     let firstName;
     let lastName;
     let departmentName;
+    let departmentId;
+    let workPlaceSlug;
+    let workPlaceName;
 
     gen_token.subscribe(value => {
         the_token = value;
@@ -258,7 +274,19 @@
 
     sso_departmentName.subscribe(value => {
         departmentName = value;
-    })
+    });
+
+    sso_departmentId.subscribe(value => {
+        departmentId = value;
+    });
+
+    sso_workPlaceSlug.subscribe(value => {
+        workPlaceSlug = value;
+    });
+
+    sso_workPlaceName.subscribe(value => {
+        workPlaceName = value;
+    });
 
     onMount(async () => {
         let params = $page.url.searchParams;
@@ -288,6 +316,7 @@
                 sso_firstName.set(res.firstName);
                 sso_lastName.set(res.lastName);
                 sso_departmentName.set(res.departmentName);
+                sso_departmentId.set(res.departmentSlug)
                 sso_workPlaceSlug.set(res.workPlaceSlug);
                 sso_workPlaceName.set(res.workPlaceSlugName);
                 sso_personCode.set(res.personCode);
