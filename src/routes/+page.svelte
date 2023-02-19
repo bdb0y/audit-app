@@ -31,6 +31,9 @@
                     console.log('not located in tehran');
                     selected_unit = workPlaceSlug;
                 }
+                topics = getTopics();
+                console.log(topics);
+                selected_topic = undefined;
             }
             // console.log(periods);
             // if (requests.length < 10)
