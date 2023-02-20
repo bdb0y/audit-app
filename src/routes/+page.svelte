@@ -22,6 +22,8 @@
         if (req.ok) {
             periods = res;
             selected_period = periods[0];
+            console.log('personnel id');
+            console.log(personnelId);
             if (personnelId === '499210') {
                 isAdmin = true;
                 console.log('this is called');
