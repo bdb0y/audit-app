@@ -13,6 +13,8 @@
 
     let topics;
 
+    let isAdmin = false;
+
     async function getPeriods() {
         const req = await fetch(`${END_POINT}/api/period/get_periods`)
         const res = await req.json();
@@ -20,9 +22,11 @@
         if (req.ok) {
             periods = res;
             selected_period = periods[0];
-            if (personnelId === '987331')
+            if (personnelId === '987331'){
+                isAdmin = true;
                 await getUnits();
-            else {
+            } else {
+                isAdmin = false;
                 console.log('not admin');
 
                 console.log('this is the unit');
@@ -301,12 +305,6 @@
         await getInformation();
         // topics = getTopics();
     });
-
-    $: {
-        if (the_token && the_token !== -1) {
-            getInformation();
-        }
-    }
 
     async function getInformation() {
         if (the_token) {
@@ -855,9 +853,9 @@
                         <option>در حال بارگزاری</option>
                     </select>
                 {/if}
-                {#if personnelId === '987331'}
+                {#if isAdmin && personnelId === '987331'}
                     <span>واحد فعال</span>
-                    {#if selected_unit}
+                    {#if isAdmin && selected_unit}
                         <select class="border-2 border-gray-100 w-full mb-4"
                                 bind:value={selected_unit}>
                             {#each Array.from(units) as unit}
