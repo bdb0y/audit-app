@@ -24,21 +24,7 @@
                 await getUnits();
             else {
                 console.log('not admin');
-                if (workPlaceSlug === 'wJCPQ8MALTlDMoYFS4Gt') {
-                    selected_unit = {
-                        id: departmentId,
-                        title: departmentName
-                    };
-                    console.log(departmentId);
-                    console.log('located in tehran');
-                } else {
-                    console.log('not located in tehran');
-                    selected_unit = {
-                        id: workPlaceSlug,
-                        title: workPlaceName
-                    };
-                    console.log(workPlaceSlug)
-                }
+
                 console.log('this is the unit');
                 console.log(selected_unit);
                 topics = getTopics();
@@ -337,6 +323,21 @@
                 sso_workPlaceName.set(res.workPlaceSlugName);
                 sso_personCode.set(res.personCode);
                 console.log(resj);
+                if (workPlaceSlug === 'wJCPQ8MALTlDMoYFS4Gt') {
+                    selected_unit = {
+                        id: departmentId,
+                        title: departmentName
+                    };
+                    console.log(departmentId);
+                    console.log('located in tehran');
+                } else {
+                    console.log('not located in tehran');
+                    selected_unit = {
+                        id: workPlaceSlug,
+                        title: workPlaceName
+                    };
+                    console.log(workPlaceSlug)
+                }
                 await getPeriods();
             } catch (e) {
 
@@ -854,8 +855,8 @@
                         <option>در حال بارگزاری</option>
                     </select>
                 {/if}
-                <span>واحد فعال</span>
                 {#if personnelId === '987331'}
+                    <span>واحد فعال</span>
                     {#if selected_unit}
                         <select class="border-2 border-gray-100 w-full mb-4"
                                 bind:value={selected_unit}>
