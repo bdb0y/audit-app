@@ -24,6 +24,7 @@
             selected_period = periods[0];
             if (personnelId === '987331'){
                 isAdmin = true;
+                console.log('this is called');
                 await getUnits();
             } else {
                 isAdmin = false;
@@ -394,12 +395,14 @@
         on_delete = false;
     }
 
+    // let previous_topic;
+
     $: {
         if (selected_unit) {
             console.log('I am called after setting unit')
-            topics = getTopics();
-            console.log(topics);
-            selected_topic = undefined;
+            // topics = getTopics();
+            // console.log(topics);
+            // selected_topic = undefined;
         }
     }
 
