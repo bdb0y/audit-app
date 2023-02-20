@@ -22,20 +22,12 @@
         if (req.ok) {
             periods = res;
             selected_period = periods[0];
-            console.log('personnel id');
-            console.log(personnelId);
             if (personnelId === '499210') {
                 isAdmin = true;
-                console.log('this is called');
                 await getUnits();
             } else {
                 isAdmin = false;
-                console.log('not admin');
-
-                console.log('this is the unit');
-                console.log(selected_unit);
                 topics = getTopics();
-                console.log(topics);
                 the_selected_topic.set(undefined);
             }
             // console.log(periods);
@@ -55,8 +47,6 @@
 
         if (req.ok) {
             units = res;
-            console.log('units');
-            console.log(units);
             selected_unit = units[0];
             // console.log(periods);
             // if (requests.length < 10)
@@ -68,9 +58,6 @@
 
     async function getTopics() {
         if (selected_period && selected_unit) {
-            console.log(selected_period.id);
-            console.log(selected_unit.id);
-
             const req = await fetch(`${END_POINT}/api/topic/get_topics?periodId=${selected_period.id}&unitId=${selected_unit.id}`)
             const res = await req.json();
 
@@ -106,18 +93,11 @@
             topicId = selected_topic.id;
         else return;
 
-        console.log(topicId);
-        console.log(unitId);
-
         const req = await fetch(`${END_POINT}/api/subject/get_topic_subjects?topicId=${topicId}&unitId=${selected_unit.id}`)
         const res = await req.json();
-        console.log(res);
 
         if (req.ok) {
-            console.log(res);
             grouped_items = groupByCategory(res);
-            console.log('this is the time');
-            console.log(grouped_items);
             return res;
             // if (requests.length < 10)
             //     show_more_visible = false;
@@ -167,7 +147,6 @@
     }
 
     async function createSubjectOnTopic() {
-        console.log(JSON.stringify(subject_on_create));
 
         const form_body = new FormData();
         form_body.append('topicId', subject_on_create.topicId);
@@ -188,9 +167,7 @@
         const res = await req.json();
 
         if (req.ok) {
-            console.log(res);
             subjects = await getTopicSubjects();
-            console.log(subjects);
             on_new_subject = false;
             // if (requests.length < 10)
             //     show_more_visible = false;
@@ -235,9 +212,7 @@
         const res = await req.json();
 
         if (req.ok) {
-            console.log(res);
             subjects = await getTopicSubjects();
-            console.log(subjects);
             // if (requests.length < 10)
             //     show_more_visible = false;
         } else {
@@ -307,8 +282,6 @@
     onMount(async () => {
         let params = $page.url.searchParams;
         if (params.has("token")) {
-            console.log('here is the token')
-            console.log(params.has('token') ? params.get('token') : 'not available');
             gen_token.set(params?.get('token'));
             await goto('/', {replaceState: false})
         }
@@ -330,21 +303,16 @@
                 sso_workPlaceSlug.set(res.workPlaceSlug);
                 sso_workPlaceName.set(res.workPlaceSlugName);
                 sso_personCode.set(res.personCode);
-                console.log(resj);
                 if (workPlaceSlug === 'wJCPQ8MALTlDMoYFS4Gt') {
                     selected_unit = {
                         id: departmentId,
                         title: departmentName
                     };
-                    console.log(departmentId);
-                    console.log('located in tehran');
                 } else {
-                    console.log('not located in tehran');
                     selected_unit = {
                         id: workPlaceSlug,
                         title: workPlaceName
                     };
-                    console.log(workPlaceSlug)
                 }
                 await getPeriods();
             } catch (e) {
@@ -366,9 +334,7 @@
         const res = await req.json();
 
         if (req.ok) {
-            console.log(res);
             topics = await getTopics();
-            console.log(topics);
             // if (requests.length < 10)
             //     show_more_visible = false;
         } else {
@@ -380,7 +346,6 @@
     }
 
     async function removeSubject(subjectId) {
-        console.log(JSON.stringify(subject_on_create));
 
         const form_body = new FormData();
         form_body.append('subjectId', subjectId);
@@ -392,9 +357,7 @@
         const res = await req.json();
 
         if (req.ok) {
-            console.log(res);
             subjects = await getTopicSubjects();
-            console.log(subjects);
             // if (requests.length < 10)
             //     show_more_visible = false;
         } else {
@@ -408,9 +371,7 @@
 
     $: {
         if (isAdmin && selected_unit) {
-            console.log('I am called after setting unit')
             topics = getTopics();
-            // console.log(topics);
             the_selected_topic.set(undefined);
         }
     }
@@ -469,8 +430,6 @@
             && subject_on_modify.category
             && subject_on_modify.title.length > 0
             && subject_on_modify.category.length > 0;
-
-        console.log(is_modify_form_complete);
     }
 
     let on_show_documents = false;
@@ -482,7 +441,6 @@
     let on_delete = false;
 
     async function confirmSubject(id, unitId) {
-        console.log(JSON.stringify(subject_on_create));
 
         const form_body = new FormData();
         form_body.append('subjectId', id);
@@ -495,9 +453,7 @@
         const res = await req.json();
 
         if (req.ok) {
-            console.log(res);
             subjects = await getTopicSubjects();
-            console.log(subjects);
             // if (requests.length < 10)
             //     show_more_visible = false;
         } else {
@@ -520,9 +476,7 @@
         const res = await req.json();
 
         if (req.ok) {
-            console.log(res);
             subjects = await getTopicSubjects();
-            console.log(subjects);
             // if (requests.length < 10)
             //     show_more_visible = false;
         } else {
@@ -533,10 +487,6 @@
     }
 
     async function confirmTopic(id, unitId) {
-
-        console.log('topic id and unitId')
-        console.log(id);
-        console.log(unitId);
 
         const form_body = new FormData();
         form_body.append('topicId', id);
@@ -549,9 +499,7 @@
         const res = await req.json();
 
         if (req.ok) {
-            console.log(res);
             topics = await getTopics();
-            console.log(topics);
             // if (requests.length < 10)
             //     show_more_visible = false;
         } else {
@@ -571,9 +519,7 @@
         const res = await req.json();
 
         if (req.ok) {
-            console.log(res);
             topics = await getTopics();
-            console.log(topics);
             // if (requests.length < 10)
             //     show_more_visible = false;
         } else {
@@ -922,7 +868,6 @@
                                     </div>
                                     <div class="flex flex-row items-center grow">
                                         <div on:click={() => {
-                                        console.log('clicked on it');
                                          if (opened_topic !== undefined){
                                             opened_topic.is_opened = false;
                                             opened_topic.is_on_modify_topic = false;
@@ -937,7 +882,6 @@
                                         </div>
                                         <!--{#if !topic.locked}-->
                                         <i on:click={()=> {
-                                        console.log('clicked on modification');
 
                                         topic_on_modify.id = topic.id;
                                         topic_on_modify.title = topic.title;
