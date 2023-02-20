@@ -860,9 +860,9 @@
                         <option>در حال بارگزاری</option>
                     </select>
                 {/if}
-                {#if isAdmin && personnelId === '987331'}
+                {#if isAdmin}
                     <span>واحد فعال</span>
-                    {#if isAdmin && selected_unit}
+                    {#if selected_unit}
                         <select class="border-2 border-gray-100 w-full mb-4"
                                 bind:value={selected_unit}>
                             {#each Array.from(units) as unit}
