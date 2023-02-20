@@ -11,3 +11,4 @@ export const sso_workPlaceName= writable("");
 export const sso_departmentId = writable("");
 export const sso_unitId = writable("");
 export const sso_personCode = writable("");
+export const the_selected_topic = writable();

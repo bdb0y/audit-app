@@ -36,7 +36,7 @@
                 console.log(selected_unit);
                 topics = getTopics();
                 console.log(topics);
-                selected_topic = undefined;
+                the_selected_topic.set(undefined);
             }
             // console.log(periods);
             // if (requests.length < 10)
@@ -260,7 +260,8 @@
         sso_personCode,
         sso_workPlaceSlug,
         sso_workPlaceName,
-        sso_departmentId
+        sso_departmentId,
+        the_selected_topic
     } from "../stores.js";
 
     let the_token;
@@ -298,6 +299,10 @@
     sso_workPlaceName.subscribe(value => {
         workPlaceName = value;
     });
+
+    the_selected_topic.subscribe(value => {
+        selected_topic = value;
+    })
 
     onMount(async () => {
         let params = $page.url.searchParams;
@@ -371,7 +376,7 @@
         }
 
         on_modify_topic = false;
-        selected_topic = undefined;
+        the_selected_topic.set(undefined);
     }
 
     async function removeSubject(subjectId) {
@@ -406,7 +411,7 @@
             console.log('I am called after setting unit')
             topics = getTopics();
             console.log(topics);
-            selected_topic = undefined;
+            the_selected_topic.set(undefined);
         }
     }
 
@@ -900,7 +905,7 @@
                     {#if result}
                         {#each Array.from(result) as topic}
                             <div on:click={async () => {
-                                selected_topic = topic;
+                                the_selected_topic.set(topic);
                                 subject_on_create.topicId = topic.id;
                                 subjects = await getTopicSubjects();
                             }}
@@ -1158,7 +1163,7 @@
     </div>
     {#if selected_topic}
         <div style="background-color: #357CA5"
-             on:click={() => selected_topic = undefined}
+             on:click={() => the_selected_topic.set(undefined)}
              class="block md:hidden text-white text-center py-3 fixed bottom-0 left-0 w-full z-10">
             <span>بازگشت</span>
         </div>
