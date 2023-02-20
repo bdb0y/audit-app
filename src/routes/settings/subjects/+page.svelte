@@ -95,7 +95,7 @@
 
     onMount(async () => {
         if (personnelId !== '499210') {
-            await goto('/', {replaceState: false});
+            await goto('/', {replaceState: true});
         }else {
             subjects = getSubjects();
             periods = await getPeriods();
