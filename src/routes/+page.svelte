@@ -411,7 +411,7 @@
             console.log('I am called after setting unit')
             topics = getTopics();
             // console.log(topics);
-            // the_selected_topic.set(undefined);
+            the_selected_topic.set(undefined);
         }
     }
 
