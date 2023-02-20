@@ -312,7 +312,7 @@
             gen_token.set(params?.get('token'));
             await goto('/', {replaceState: false})
         }
-        await getPeriods();
+        await getInformation();
         // topics = getTopics();
     });
 
@@ -337,6 +337,7 @@
                 sso_workPlaceName.set(res.workPlaceSlugName);
                 sso_personCode.set(res.personCode);
                 console.log(resj);
+                await getPeriods();
             } catch (e) {
 
             }
