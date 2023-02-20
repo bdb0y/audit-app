@@ -866,7 +866,7 @@
                 {/if}
                 {#if isAdmin}
                     <span>واحد فعال</span>
-                    {#if selected_unit}
+                    {#if units && selected_unit}
                         <select class="border-2 border-gray-100 w-full mb-4"
                                 bind:value={selected_unit}>
                             {#each Array.from(units) as unit}
