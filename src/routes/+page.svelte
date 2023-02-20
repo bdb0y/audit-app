@@ -22,7 +22,7 @@
         if (req.ok) {
             periods = res;
             selected_period = periods[0];
-            if (personnelId === '987331') {
+            if (personnelId === '499210') {
                 isAdmin = true;
                 console.log('this is called');
                 await getUnits();
