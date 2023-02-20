@@ -410,8 +410,8 @@
         if (isAdmin && selected_unit) {
             console.log('I am called after setting unit')
             topics = getTopics();
-            console.log(topics);
-            the_selected_topic.set(undefined);
+            // console.log(topics);
+            // the_selected_topic.set(undefined);
         }
     }
 
