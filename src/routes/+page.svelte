@@ -853,22 +853,22 @@
                         <option>در حال بارگزاری</option>
                     </select>
                 {/if}
-                {#if isAdmin && personnelId === '987331'}
-                    <span>واحد فعال</span>
-                    {#if isAdmin && selected_unit}
-                        <select class="border-2 border-gray-100 w-full mb-4"
-                                bind:value={selected_unit}>
-                            {#each Array.from(units) as unit}
-                                <option value="{unit}" id="{unit}">{unit.title}</option>
-                            {/each}
-                        </select>
-                    {:else}
-                        <select disabled
-                                class="border-2 border-gray-100 w-full mb-4 shimmer-effect text-gray-400">
-                            <option>در حال بارگزاری</option>
-                        </select>
-                    {/if}
-                {/if}
+                <!--{#if isAdmin && personnelId === '987331'}-->
+                <!--    <span>واحد فعال</span>-->
+                <!--    {#if isAdmin && selected_unit}-->
+                <!--        <select class="border-2 border-gray-100 w-full mb-4"-->
+                <!--                bind:value={selected_unit}>-->
+                <!--            {#each Array.from(units) as unit}-->
+                <!--                <option value="{unit}" id="{unit}">{unit.title}</option>-->
+                <!--            {/each}-->
+                <!--        </select>-->
+                <!--    {:else}-->
+                <!--        <select disabled-->
+                <!--                class="border-2 border-gray-100 w-full mb-4 shimmer-effect text-gray-400">-->
+                <!--            <option>در حال بارگزاری</option>-->
+                <!--        </select>-->
+                <!--    {/if}-->
+                <!--{/if}-->
                 <h1 class="font-bold text-xs sm:text-md">موضوعات موجود در دوره</h1>
             </div>
             <hr/>
