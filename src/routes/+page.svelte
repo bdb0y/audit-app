@@ -390,6 +390,7 @@
 
     $: {
         if (selected_unit) {
+            console.log('I am called after setting unit')
             topics = getTopics();
             console.log(topics);
             selected_topic = undefined;
