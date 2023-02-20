@@ -56,6 +56,7 @@
         if (req.ok) {
             units = res;
             console.log('units');
+            console.log(units);
             selected_unit = units[0];
             // console.log(periods);
             // if (requests.length < 10)
