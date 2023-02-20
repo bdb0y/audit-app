@@ -2,6 +2,8 @@
 
     import {END_POINT} from "../../../constants.js";
     import {onMount} from "svelte";
+    import {goto} from "$app/navigation";
+    import {sso_personCode} from "../../../stores.js";
 
     let topic_on_create = {
         title: '',
@@ -46,11 +48,21 @@
 
     let periods;
 
+    let personnelId;
+
+    sso_personCode.subscribe(value => {
+        personnelId = value;
+    });
+
     onMount(async () => {
-        topics = getTopics();
-        periods = await getPeriods();
-        if (periods.length > 0)
-            topic_on_create.period = periods.id;
+        if (personnelId !== '499210') {
+            await goto('/', {replaceState: false});
+        }else {
+            topics = getTopics();
+            periods = await getPeriods();
+            if (periods.length > 0)
+                topic_on_create.period = periods.id;
+        }
     });
 
     function convert_date_long(date) {

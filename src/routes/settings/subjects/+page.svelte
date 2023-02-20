@@ -87,17 +87,26 @@
 
     let periods;
 
-    onMount(async () => {
-        subjects = getSubjects();
-        periods = await getPeriods();
-        units = await getUnits();
-        if (periods.length > 0) {
-            selected_period = periods[0];
-            subject_on_create.period = selected_period.id;
-            subject_on_modify.period = selected_period.id;
-            await getPeriodTopics();
-        }
+    let personnelId;
 
+    sso_personCode.subscribe(value => {
+        personnelId = value;
+    });
+
+    onMount(async () => {
+        if (personnelId !== '499210') {
+            await goto('/', {replaceState: false});
+        }else {
+            subjects = getSubjects();
+            periods = await getPeriods();
+            units = await getUnits();
+            if (periods.length > 0) {
+                selected_period = periods[0];
+                subject_on_create.period = selected_period.id;
+                subject_on_modify.period = selected_period.id;
+                await getPeriodTopics();
+            }
+        }
     });
 
     async function createSubject() {
@@ -379,6 +388,8 @@
     }
 
     import {fly, fade} from 'svelte/transition';
+    import {goto} from "$app/navigation";
+    import {sso_personCode} from "../../../stores.js";
 
 
 </script>

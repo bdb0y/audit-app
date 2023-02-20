@@ -33,7 +33,7 @@
 
     let periods;
 
-    import {unitId} from "../../../stores.js";
+    import {sso_personCode, unitId} from "../../../stores.js";
 
     let the_unit_id;
 
@@ -41,12 +41,19 @@
         the_unit_id = value;
     });
 
+    let personnelId;
+
+    sso_personCode.subscribe(value => {
+        personnelId = value;
+    });
+
     onMount(() => {
         the_unit_id = "SNvkIXRTy42g4ZrlEZcP";
-        if (!the_unit_id || the_unit_id === -1 || the_unit_id === 1003) {
+        if (personnelId !== '499210') {
             goto('/', {replaceState: false});
+        }else {
+            periods = getPeriods();
         }
-        periods = getPeriods();
     });
 
     function convert_date_short(date) {
