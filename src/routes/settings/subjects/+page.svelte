@@ -94,9 +94,7 @@
     });
 
     onMount(async () => {
-        if (personnelId !== '499210') {
-            await goto('/', {replaceState: true});
-        }else {
+        if(personnelId === '499210' || personnelId === '999176' || personnelId === 'admin') {
             subjects = getSubjects();
             periods = await getPeriods();
             units = await getUnits();
@@ -106,6 +104,8 @@
                 subject_on_modify.period = selected_period.id;
                 await getPeriodTopics();
             }
+        }else {
+            await goto('/', {replaceState: false});
         }
     });
 

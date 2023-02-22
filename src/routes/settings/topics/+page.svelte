@@ -55,13 +55,13 @@
     });
 
     onMount(async () => {
-        if (personnelId !== '499210') {
-            await goto('/', {replaceState: false});
-        }else {
+        if(personnelId === '499210' || personnelId === '999176' || personnelId === 'admin'){
             topics = getTopics();
             periods = await getPeriods();
             if (periods.length > 0)
                 topic_on_create.period = periods.id;
+        }else {
+            await goto('/', {replaceState: false});
         }
     });
 

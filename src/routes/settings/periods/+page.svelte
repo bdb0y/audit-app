@@ -49,10 +49,10 @@
 
     onMount(() => {
         the_unit_id = "SNvkIXRTy42g4ZrlEZcP";
-        if (personnelId !== '499210') {
-            goto('/', {replaceState: false});
-        }else {
+        if(personnelId === '499210' || personnelId === '999176' || personnelId === 'admin'){
             periods = getPeriods();
+        }else {
+            goto('/', {replaceState: false});
         }
     });
 
