@@ -23,18 +23,18 @@
             periods = res;
             selected_period = periods[0];
             if (personnelId === '499210' || personnelId === '999176') {
-                isAdmin = true;
-                await getUnits();
+            isAdmin = true;
+            await getUnits();
             } else {
                 isAdmin = false;
-                topics = getTopics();
+            topics = getTopics();
                 the_selected_topic.set(undefined);
-            }
-            // console.log(periods);
-            // if (requests.length < 10)
-            //     show_more_visible = false;
+        }
+        // console.log(periods);
+        // if (requests.length < 10)
+        //     show_more_visible = false;
         } else {
-            // show_more_visible = false;
+        // show_more_visible = false;
         }
     }
 
@@ -62,6 +62,7 @@
             const res = await req.json();
 
             if (req.ok) {
+                // console.log(res);
                 return res;
                 // if (requests.length < 10)
                 //     show_more_visible = false;
@@ -98,6 +99,7 @@
 
         if (req.ok) {
             grouped_items = groupByCategory(res);
+            // console.log(grouped_items)
             return res;
             // if (requests.length < 10)
             //     show_more_visible = false;
@@ -137,7 +139,8 @@
         normalWeight: 0,
         category: '',
         isAdmin: false,
-        comment: ''
+        comment: '',
+        progressLocked: false
     }
 
     let topic_on_modify = {
@@ -236,7 +239,7 @@
         sso_workPlaceSlug,
         sso_workPlaceName,
         sso_departmentId,
-        the_selected_topic
+        the_selected_topic, authenticated
     } from "../stores.js";
 
     let the_token;
@@ -277,15 +280,28 @@
 
     the_selected_topic.subscribe(value => {
         selected_topic = value;
-    })
+    });
+
+    let is_authenticated;
+
+    authenticated.subscribe(value => {
+        is_authenticated = value;
+    });
 
     onMount(async () => {
         let params = $page.url.searchParams;
         if (params.has("token")) {
             gen_token.set(params?.get('token'));
             await goto('/', {replaceState: false})
+        } else if (!is_authenticated || the_token === undefined || the_token === -1) {
+            await goto('/authenticate');
+        }
+
+        if (is_authenticated) {
+            isAdmin = true;
         }
         await getInformation();
+        // await getPeriods();
         // topics = getTopics();
     });
 
@@ -435,7 +451,9 @@
     let on_show_documents = false;
 
     let subject_on_show_documents = {
-        attachments: []
+        id: -1,
+        attachments: [],
+        to_be_attached: []
     }
 
     let on_delete = false;
@@ -500,6 +518,7 @@
 
         if (req.ok) {
             topics = await getTopics();
+            the_selected_topic.set(undefined);
             // if (requests.length < 10)
             //     show_more_visible = false;
         } else {
@@ -520,8 +539,73 @@
 
         if (req.ok) {
             topics = await getTopics();
+            the_selected_topic.set(undefined);
             // if (requests.length < 10)
             //     show_more_visible = false;
+        } else {
+            // show_more_visible = false;
+        }
+    }
+
+    function remove_attachment(file) {
+        subject_on_show_documents.to_be_attached = Array.from(subject_on_show_documents.to_be_attached).filter(f => (
+            f.name !== file.name && f.size !== file.size
+        ));
+    }
+
+    let on_upload = false;
+
+    async function uploadDoc() {
+        on_upload = true;
+        console.log(JSON.stringify(subject_on_show_documents));
+
+        const form_body = new FormData();
+        form_body.append('id', subject_on_show_documents.id);
+        form_body.append('isAdmin', false);
+
+        if (subject_on_show_documents.to_be_attached !== undefined) {
+            let all_attachments = Array.from(subject_on_show_documents.to_be_attached);
+            for (let i = 0; i < all_attachments.length; i++) {
+                form_body.append('attachments', all_attachments[i]);
+            }
+        }
+
+        console.log('ready to submit');
+        console.log(subject_on_show_documents);
+
+        const req = await fetch(`${END_POINT}/api/subject/upload_docs`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            subjects = await getTopicSubjects();
+            on_upload = false;
+            on_show_documents = false;
+            subject_on_show_documents = {
+                id: '',
+                attachments: [],
+                to_be_attached: []
+            };
+        } else {
+        }
+    }
+
+    async function removeDocument(id) {
+
+        const form_body = new FormData();
+        form_body.append('fileId', id);
+
+        const req = await fetch(`${END_POINT}/api/subject/attachments/remove`, {
+            method: 'POST',
+            body: form_body
+        })
+        const res = await req.json();
+
+        if (req.ok) {
+            subjects = await getTopicSubjects();
+            on_show_documents = false;
         } else {
             // show_more_visible = false;
         }
@@ -538,7 +622,7 @@
     {#if on_new_subject || on_modify_subject || on_show_documents || on_delete}
         <div class="bg-black/60 backdrop-opacity-50 w-screen h-screen fixed top-0 right-0 z-20">
             <dialog in:fly="{{ y: -100, duration: 200 }}" out:fly="{{ y: -100, duration: 200 }}"
-                    class="z-20 w-full md:w-3/5 drop-shadow-xl top-48 p-0 dialog-box"
+                    class="z-20 w-full md:w-3/5 drop-shadow-xl top-24 p-0 dialog-box"
                     open="{on_new_subject || on_modify_subject || on_show_documents || on_delete ? 'open':''}">
                 {#if on_new_subject}
                     <div>
@@ -699,7 +783,7 @@
                                     <label for="mselected_topic_progress">امتیاز/درصد پیشرفت</label>
                                     <span class="mr-auto">{subject_on_modify.progress}/100</span>
                                 </div>
-                                <input disabled={subject_on_modify.locked}
+                                <input disabled={subject_on_modify.locked || subject_on_modify.progressLocked}
                                        type="range" bind:value={subject_on_modify.progress} min=0 max=100
                                        id="mselected_topic_progress" class="py-2"
                                        placeholder="موضوع شماره یک"
@@ -707,11 +791,13 @@
                             </div>
                             <div class="px-2 text-left pb-2">
                                 {#if !subject_on_modify.locked}
-                                    <button disabled={!is_modify_form_complete}
-                                            on:click={() => modifySubject()}
-                                            class="{is_modify_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_modify_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">
-                                        ثبت
-                                    </button>
+                                    {#if !subject_on_modify.progressLocked}
+                                        <button disabled={!is_modify_form_complete}
+                                                on:click={() => modifySubject()}
+                                                class="{is_modify_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_modify_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">
+                                            ثبت
+                                        </button>
+                                    {/if}
                                     {#if isAdmin}
                                         <button on:click={() => confirmSubject(subject_on_modify.id, subject_on_modify.unitId)}
                                                 class="{is_modify_form_complete ? 'bg-blue-500':'bg-slate-500'} text-white py-2 {is_modify_form_complete ? 'hover:bg-blue-600':'hover:bg-slate-600'} rounded-sm mr-auto px-8">
@@ -740,27 +826,72 @@
                         <div class="flex flex-col gap-2">
                             <div style="background-color: #3C8DBC"
                                  class="px-4 py-4 flex flex-row items-center text-white">
-                                <h1 class="font-bold">بارگیری اسناد</h1>
+                                <h1 class="font-bold">بارگزاری/بارگیری اسناد</h1>
                             </div>
-                            {#if subject_on_show_documents.attachments}
+                            {#if isAdmin}
+                                {#if !selected_topic.locked}
+                                    <div class="px-2 flex flex-col gap-2 text-sm">
+                                        <label for="selected_topic_attachments"
+                                               class="flex flex-row px-2 py-2 md:py-0 rounded-md bg-slate-50 text-black hover:bg-slate-100 text-black font-bold text-sm md:leading-10 outline-none text-center items-center cursor-pointer">
+                                            <span>برای بارگزاری اسناد را انتخاب کنید</span>
+                                            <i class="bi bi-cloud-upload text-xl flex mr-auto"></i>
+                                        </label>
+                                        <input
+                                                accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                                        text/plain, application/pdf, image/jpg, image/jpeg, image/png, application/zip"
+                                                id="selected_topic_attachments" class="hidden" type="file" multiple
+                                                bind:files={subject_on_show_documents.to_be_attached}/>
+                                    </div>
+                                    {#if subject_on_show_documents.to_be_attached && subject_on_show_documents.to_be_attached.length > 0}
+                                        <div class="px-2 flex flex-col gap-2 text-sm">
+                                            <span>اسناد انتخاب شده برای بارگزاری</span>
+                                            <div class="flex flex-row flex-wrap gap-2 px-2">
+                                                {#each Array.from(subject_on_show_documents.to_be_attached) as file}
+                                                    <div class="shimmer-effect flex flex-row gap-2 bg-slate-50 rounded-lg text-sm items-center">
+                                                        <i on:click={() => remove_attachment(file)}
+                                                           class="hover:bg-slate-100 bi bi-x flex text-lg h-full items-center rounded-r-lg px-2 cursor-pointer"></i>
+                                                        <span class="pl-2 py-2 text-gray-500">{file.name}</span>
+                                                    </div>
+                                                {/each}
+                                            </div>
+                                        </div>
+                                    {/if}
+                                {/if}
+                            {/if}
+                            {#if subject_on_show_documents.attachments && subject_on_show_documents.attachments.length > 0}
                                 <div data-sveltekit-preload-data="off"
                                      class="px-2 flex flex-col gap-2 text-sm">
                                     <span>اسناد بارگزاری شده</span>
                                     <div class="flex flex-row flex-wrap gap-2">
                                         {#each Array.from(subject_on_show_documents.attachments) as file}
-                                            <a href="/api/subject/attachments?fileId={file.id}{file.name}"
-                                               class="shimmer-effect flex flex-row gap-2 bg-slate-50 rounded-lg text-sm items-center">
-                                                <i class="bi bi-cloud-download flex text-lg h-full items-center rounded-r-lg px-2 cursor-pointer"></i>
-                                                <span class="pl-2 py-2 text-gray-500">{file.name}</span>
-                                            </a>
+                                            <div class="flex flex-row bg-slate-50 rounded-lg text-sm items-center">
+                                                {#if !file.isAdmin}
+                                                    <i on:click={removeDocument(file.id)}
+                                                       class="bi bi-x flex text-lg h-full items-center rounded-r-lg px-2 cursor-pointer"></i>
+                                                {/if}
+                                                <a href="/api/subject/attachments?fileId={file.id}{file.name}"
+                                                   class="shimmer-effect flex flex-row gap-2 items-center">
+                                                    <i class="bi bi-cloud-download flex text-lg h-full items-center px-2 cursor-pointer"></i>
+                                                    <span class="pl-2 py-2 text-gray-500">{file.name}</span>
+                                                </a>
+                                            </div>
                                         {/each}
                                     </div>
                                 </div>
                             {/if}
                             <div class="px-2 mr-auto">
+                                {#if subject_on_show_documents.to_be_attached.length > 0}
+                                    <button disabled={on_upload}
+                                            on:click={() => {
+                                        uploadDoc()
+                                    }}
+                                            class="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-sm px-4">
+                                        {on_upload ? 'درحال بارگزاری' : 'بارگزاری اسناد انتخاب شده'}
+                                    </button>
+                                {/if}
                                 <button on:click={() => {
-                                on_show_documents = false;
-                            }}
+                                        on_show_documents = false;
+                                    }}
                                         class="bg-slate-500 hover:bg-slate-600 text-white py-2 rounded-sm px-4">بستن
                                 </button>
                             </div>
@@ -878,7 +1009,7 @@
                                     }} class="flex flex-row items-center grow py-2">
                                             <i class="text-lg bi {topic.locked ? 'bi-check-lg':'bi-file-text'} flex text-lg px-4 py-4"></i>
                                             <!--                                        <span class="text-xs sm:text-md text-justify leading-5">{topic.title.length > 50 ? `${topic.title.substring(0, 50)}...` : topic.title}</span>-->
-                                            <span class="text-xs sm:text-md text-justify leading-5">{topic.title}</span>
+                                            <span class="text-xs sm:text-lg text-justify leading-5">{topic.title}</span>
                                         </div>
                                         <!--{#if !topic.locked}-->
                                         <i on:click={()=> {
@@ -919,37 +1050,40 @@
                                                     پیشرفت {topic_on_modify.title}</label>
                                                 <span class="mr-auto">{topic_on_modify.progress}/100</span>
                                             </div>
-                                            <input disabled={topic.locked}
+                                            <input disabled={topic.locked || topic.progressLocked}
                                                    type="range" bind:value={topic_on_modify.progress} min=0 max=100
                                                    id="selected_topic_total_progress" class="py-2"
                                                    step="5"/>
                                         </div>
-                                        <div class="flex flex-row gap-2">
-                                            {#if !topic.locked}
-                                                <button on:click={() => submitTopicProgress()}
-                                                        class="mr-auto bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm  text-xs sm:text-md">
-                                                    ثبت
-                                                </button>
-                                                {#if isAdmin}
-                                                    <button on:click={() => confirmTopic(topic.id, selected_unit.id)}
-                                                            class="bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm  text-xs sm:text-md">
-                                                        تایید
-                                                    </button>
-                                                {/if}
-                                            {:else}
-                                                {#if isAdmin}
-                                                    <button on:click={() => takeBackConfirmTopic(topic.id, selected_unit.id)}
-                                                            class="mr-auto bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm  text-xs sm:text-md">
-                                                        بازگشت از تایید
-                                                    </button>
-                                                {/if}
-                                            {/if}
+                                        <div class="flex flex-row-reverse gap-2">
                                             <button on:click={() => {
                                                 topic.is_on_modify_topic = false;
                                             }}
                                                     class="py-2 px-3 rounded-sm bg-slate-200 text-slate-700 text-xs sm:text-md">
                                                 لغو
                                             </button>
+                                            {#if !topic.locked}
+                                                {#if !topic.progressLocked}
+                                                    <button on:click={() => submitTopicProgress()}
+                                                            class="bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm text-xs sm:text-md">
+                                                        ثبت
+                                                    </button>
+                                                {/if}
+                                                {#if isAdmin}
+                                                    <button on:click={() => confirmTopic(topic.id, selected_unit.id)}
+                                                            class="bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm text-xs sm:text-md">
+                                                        تایید
+                                                    </button>
+                                                {/if}
+                                            {:else}
+                                                {#if isAdmin}
+                                                    <button on:click={() => takeBackConfirmTopic(topic.id, selected_unit.id)}
+                                                            class="bg-blue-500 text-white px-3 py-2 hover:bg-blue-600 rounded-sm text-xs sm:text-md">
+                                                        بازگشت از تایید
+                                                    </button>
+                                                {/if}
+                                            {/if}
+
                                         </div>
                                     </div>
                                 {/if}
@@ -1047,6 +1181,7 @@
                                                                 subject_on_modify.isAdmin = subject_item.isAdmin;
                                                                 subject_on_modify.locked = subject_item.locked;
                                                                 subject_on_modify.comment = subject_item.comment;
+                                                                subject_on_modify.progressLocked = subject_item.progressLocked
                                                                 getCategories();
                                                             }}
                                                                class="bi bi bi-pencil flex mr-auto text-lg px-4 h-full items-center hover:bg-blue-200"></i>
@@ -1063,15 +1198,16 @@
                                                                 {/if}
                                                             {/if}
                                                         {/if}
-                                                        {#if subject_item.attachments}
-                                                            <i on:click={() => {
+                                                        <!--{#if subject_item.attachments}-->
+                                                        <i on:click={() => {
                                                             on_new_subject = false;
                                                             on_modify_subject = false;
                                                             on_show_documents = true;
-                                                            subject_on_show_documents.attachments = JSON.parse(subject_item.attachments)
+                                                            subject_on_show_documents.attachments = subject_item.attachments ? JSON.parse(subject_item.attachments): [];
+                                                            subject_on_show_documents.id = subject_item.id;
                                                         }}
-                                                               class="bi bi bi-cloud-download flex text-lg px-4 h-full items-center hover:bg-blue-200"></i>
-                                                        {/if}
+                                                           class="bi bi bi-cloud-download flex text-lg px-4 h-full items-center hover:bg-blue-200"></i>
+                                                        <!--{/if}-->
                                                         <i on:click={()=> subject_item.is_opened = !subject_item.is_opened}
                                                            class="bi bi bi-justify-right flex text-lg px-4 h-full items-center hover:bg-blue-200"></i>
                                                     </div>

@@ -155,6 +155,7 @@
 
         const form_body = new FormData();
         form_body.append('id', subject_on_upload.id);
+        form_body.append('isAdmin', true);
 
         if (subject_on_upload.attachments !== undefined) {
             let all_attachments = Array.from(subject_on_upload.attachments);
