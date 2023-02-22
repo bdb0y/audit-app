@@ -1,6 +1,6 @@
 <script>
 
-    import {authenticated, gen_token} from "../../stores.js";
+    import {authenticated, gen_token, sso_personCode} from "../../stores.js";
     import {goto} from "$app/navigation";
 
     let username;
@@ -25,6 +25,7 @@
         if (username === 'admin' && password === '*#Secret761#*') {
             authenticated.set(true);
             gen_token.set(1);
+            sso_personCode.set('admin');
             await goto('/');
         } else {
             on_error = true;

@@ -38,7 +38,7 @@
                 <i class="bi bi-text-right flex text-lg"></i>
                 مدیریت موضوعات
             </li>
-            {#if personnelId === '499210' || personnelId === '999176'}
+            {#if personnelId === '499210' || personnelId === '999176' || personnelId === 'admin'}
                 <li class="flex flex-col text-sm  cursor-pointer">
                     <div on:click={() => {
                     is_settings_opened = !is_settings_opened;
