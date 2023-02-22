@@ -16,13 +16,18 @@
 
     import {goto} from "$app/navigation";
 
-    import {authenticated} from "../stores.js";
+    import {authenticated, gen_token} from "../stores.js";
 
-    onMount(() => {
-        if (is_authenticated) {
-            goto('/');
+    onMount(async () => {
+        let params = $page.url.searchParams;
+        if (params.has("token")) {
+            gen_token.set(params?.get('token'));
+            authenticated.set(true);
+            await goto('/', {replaceState: false})
+        }else if (is_authenticated) {
+            await goto('/');
         }else{
-            goto('/authenticate');
+            await goto('/authenticate');
         }
     });
 
