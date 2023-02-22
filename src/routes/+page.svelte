@@ -23,18 +23,18 @@
             periods = res;
             selected_period = periods[0];
             if (personnelId === '499210' || personnelId === '999176') {
-            isAdmin = true;
-            await getUnits();
+                isAdmin = true;
+                await getUnits();
             } else {
                 isAdmin = false;
-            topics = getTopics();
+                topics = getTopics();
                 the_selected_topic.set(undefined);
-        }
-        // console.log(periods);
-        // if (requests.length < 10)
-        //     show_more_visible = false;
+            }
+            // console.log(periods);
+            // if (requests.length < 10)
+            //     show_more_visible = false;
         } else {
-        // show_more_visible = false;
+            // show_more_visible = false;
         }
     }
 
@@ -292,6 +292,7 @@
         let params = $page.url.searchParams;
         if (params.has("token")) {
             gen_token.set(params?.get('token'));
+            authenticated.set(true);
             await goto('/', {replaceState: false})
         } else if (!is_authenticated || the_token === undefined || the_token === -1) {
             await goto('/authenticate');
