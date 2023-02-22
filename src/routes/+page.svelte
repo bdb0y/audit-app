@@ -301,8 +301,12 @@
         if (is_authenticated) {
             isAdmin = true;
         }
-        await getInformation();
-        // await getPeriods();
+        if (the_token !== 1) {
+            await getInformation();
+        } else {
+            await getPeriods();
+        }
+
         // topics = getTopics();
     });
 
