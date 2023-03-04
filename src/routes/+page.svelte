@@ -698,8 +698,7 @@
                                 </div>
                                 <input type="range" bind:value={subject_on_create.progress} min=0 max=100
                                        id="selected_topic_progress" class="py-2"
-                                       placeholder="موضوع شماره یک"
-                                       step="5"/>
+                                       placeholder="موضوع شماره یک"/>
                             </div>
 
                         </div>
@@ -791,8 +790,7 @@
                                 <input disabled={subject_on_modify.locked || subject_on_modify.progressLocked}
                                        type="range" bind:value={subject_on_modify.progress} min=0 max=100
                                        id="mselected_topic_progress" class="py-2"
-                                       placeholder="موضوع شماره یک"
-                                       step="5"/>
+                                       placeholder="موضوع شماره یک"/>
                             </div>
                             <div class="px-2 text-left pb-2">
                                 {#if !subject_on_modify.locked}
@@ -1057,8 +1055,7 @@
                                             </div>
                                             <input disabled={topic.locked || topic.progressLocked}
                                                    type="range" bind:value={topic_on_modify.progress} min=0 max=100
-                                                   id="selected_topic_total_progress" class="py-2"
-                                                   step="5"/>
+                                                   id="selected_topic_total_progress" class="py-2"/>
                                         </div>
                                         <div class="flex flex-row-reverse gap-2">
                                             <button on:click={() => {
