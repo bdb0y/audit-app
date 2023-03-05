@@ -616,6 +616,11 @@
         }
     }
 
+    function get_file_extension(fileName) {
+        let name = fileName.toString();
+        return name.substring(name.lastIndexOf("."));
+    }
+
 
 </script>
 
@@ -872,7 +877,7 @@
                                                     <i on:click={removeDocument(file.id)}
                                                        class="bi bi-x flex text-lg h-full items-center rounded-r-lg px-2 cursor-pointer"></i>
                                                 {/if}
-                                                <a href="/api/subject/attachments?fileId={file.id}{file.name}"
+                                                <a href="/api/subject/attachments?fileId={file.id}{get_file_extension(file.name)}"
                                                    class="shimmer-effect flex flex-row gap-2 items-center">
                                                     <i class="bi bi-cloud-download flex text-lg h-full items-center px-2 cursor-pointer"></i>
                                                     <span class="pl-2 py-2 text-gray-500">{file.name}</span>
