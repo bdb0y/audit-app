@@ -392,6 +392,11 @@
     import {goto} from "$app/navigation";
     import {sso_personCode} from "../../../stores.js";
 
+    function get_file_extension(fileName) {
+        let name = fileName.toString();
+        return name.substring(name.lastIndexOf("."));
+    }
+
 
 </script>
 
@@ -606,7 +611,7 @@
                                     <span>اسناد بارگزاری شده</span>
                                     <div class="flex flex-row flex-wrap gap-2">
                                         {#each Array.from(subject_on_upload.preAttached) as file}
-                                            <a href="/api/subject/attachments?fileId={file.id}{file.name}"
+                                            <a href="/api/subject/attachments?fileId={file.id}{get_file_extension(file.name)}"
                                                class="shimmer-effect flex flex-row gap-2 bg-slate-50 rounded-lg text-sm items-center">
                                                 <i class="bi bi-cloud-download flex text-lg h-full items-center rounded-r-lg px-2 cursor-pointer"></i>
                                                 <span class="pl-2 py-2 text-gray-500">{file.name}</span>
