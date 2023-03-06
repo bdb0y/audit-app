@@ -836,7 +836,7 @@
                                  class="px-4 py-4 flex flex-row items-center text-white">
                                 <h1 class="font-bold">بارگزاری/بارگیری اسناد</h1>
                             </div>
-                            {#if isAdmin}
+                            <!--{#if isAdmin}-->
                                 {#if !selected_topic.locked}
                                     <div class="px-2 flex flex-col gap-2 text-sm">
                                         <label for="selected_topic_attachments"
@@ -865,7 +865,7 @@
                                         </div>
                                     {/if}
                                 {/if}
-                            {/if}
+                            <!--{/if}-->
                             {#if subject_on_show_documents.attachments && subject_on_show_documents.attachments.length > 0}
                                 <div data-sveltekit-preload-data="off"
                                      class="px-2 flex flex-col gap-2 text-sm">
