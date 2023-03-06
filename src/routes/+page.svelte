@@ -27,6 +27,14 @@
                 await getUnits();
             } else {
                 isAdmin = false;
+                if (personnelId === 'logistic') {
+                    selected_unit = {
+                        id: '3J1KvXOB4rrU3M5TCTX0',
+                        title: 'مدیریت فورواردی و لجستیک'
+                    }
+                    sso_workPlaceName.set('مدیریت فورواردی و لجستیک');
+                    sso_departmentName.set('مدیریت فورواردی و لجستیک');
+                }
                 topics = getTopics();
                 the_selected_topic.set(undefined);
             }
@@ -299,7 +307,9 @@
         }
 
         if (is_authenticated) {
-            isAdmin = true;
+            if (personnelId === '499210' || personnelId === '999176' || personnelId === 'admin') {
+                isAdmin = true;
+            }
         }
         if (the_token !== 1) {
             await getInformation();

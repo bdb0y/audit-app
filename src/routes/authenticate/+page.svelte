@@ -27,7 +27,12 @@
             gen_token.set(1);
             sso_personCode.set('admin');
             await goto('/');
-        } else {
+        } else if (username === 'logistic' && password === 'logistic'){
+            authenticated.set(true);
+            gen_token.set(1);
+            sso_personCode.set('logistic');
+            await goto('/');
+        }else {
             on_error = true;
         }
     }
