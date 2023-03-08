@@ -34,6 +34,13 @@
                     }
                     sso_workPlaceName.set('مدیریت فورواردی و لجستیک');
                     sso_departmentName.set('مدیریت فورواردی و لجستیک');
+                }else if (personnelId === '968089') {
+                    selected_unit = {
+                        id: 'za2GPmXPDq62OlvGwyhR',
+                        title: 'مدیریت معاملات و حقوقی'
+                    }
+                    sso_workPlaceName.set('مدیریت معاملات و حقوقی');
+                    sso_departmentName.set('مدیریت معاملات و حقوقی');
                 }
                 topics = getTopics();
                 the_selected_topic.set(undefined);
@@ -855,7 +862,7 @@
                                             <i class="bi bi-cloud-upload text-xl flex mr-auto"></i>
                                         </label>
                                         <input
-                                                accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                                                accept=".csv, .xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheetapplication/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
                                         text/plain, application/pdf, image/jpg, image/jpeg, image/png, application/zip"
                                                 id="selected_topic_attachments" class="hidden" type="file" multiple
                                                 bind:files={subject_on_show_documents.to_be_attached}/>

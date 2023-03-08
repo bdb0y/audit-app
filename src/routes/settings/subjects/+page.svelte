@@ -94,7 +94,7 @@
     });
 
     onMount(async () => {
-        if(personnelId === '499210' || personnelId === '999176' || personnelId === 'admin') {
+        if (personnelId === '499210' || personnelId === '999176' || personnelId === 'admin') {
             subjects = getSubjects();
             periods = await getPeriods();
             units = await getUnits();
@@ -104,7 +104,7 @@
                 subject_on_modify.period = selected_period.id;
                 await getPeriodTopics();
             }
-        }else {
+        } else {
             await goto('/', {replaceState: false});
         }
     });
@@ -601,7 +601,7 @@
                                     <i class="bi bi-cloud-upload text-xl flex mr-auto"></i>
                                 </label>
                                 <input
-                                        accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                                        accept=".csv, .xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
                                         text/plain, application/pdf, image/jpg, image/jpeg, image/png, application/zip"
                                         id="selected_topic_attachments" class="hidden" type="file" multiple
                                         bind:files={subject_on_upload.attachments}/>

@@ -32,7 +32,12 @@
             gen_token.set(1);
             sso_personCode.set('logistic');
             await goto('/');
-        }else {
+        }else if(username === '968089' && password === '968089'){
+            authenticated.set(true);
+            gen_token.set(1);
+            sso_personCode.set('968089');
+            await goto('/');
+        } else {
             on_error = true;
         }
     }
