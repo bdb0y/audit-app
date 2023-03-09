@@ -27,15 +27,25 @@
             gen_token.set(1);
             sso_personCode.set('admin');
             await goto('/');
-        } else if (username === 'logistic' && password === 'logistic'){
+        } else if (username === 'logistic' && password === 'logistic') {
             authenticated.set(true);
             gen_token.set(1);
             sso_personCode.set('logistic');
             await goto('/');
-        }else if(username === '968089' && password === '968089'){
+        } else if (username === '968089' && password === '968089') {
             authenticated.set(true);
             gen_token.set(1);
             sso_personCode.set('968089');
+            await goto('/');
+        } else if (username === 'bahadori' && password === 'bahadori') {
+            authenticated.set(true);
+            gen_token.set(1);
+            sso_personCode.set('bahadori');
+            await goto('/');
+        } else if (username === 'moji' && password === 'moji') {
+            authenticated.set(true);
+            gen_token.set(1);
+            sso_personCode.set('moji');
             await goto('/');
         } else {
             on_error = true;

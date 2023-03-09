@@ -41,6 +41,21 @@
                     }
                     sso_workPlaceName.set('مدیریت معاملات و حقوقی');
                     sso_departmentName.set('مدیریت معاملات و حقوقی');
+                }else if (personnelId === 'bahadori') {
+                    selected_unit = {
+                        id: '3MT2LjsDrYa7h8QitLaf',
+                        title: 'شعبه پایانه کانتینری و منطقه دو ویژه اقتصادی بندر بوشهر'
+                    }
+                    sso_workPlaceName.set('شعبه پایانه کانتینری و منطقه دو ویژه اقتصادی بندر بوشهر');
+                    sso_departmentName.set('شعبه پایانه کانتینری و منطقه دو ویژه اقتصادی بندر بوشهر');
+                }
+                else if (personnelId === 'moji') {
+                    selected_unit = {
+                        id: '2Yk4WkNz6JP3NOXAYzJH',
+                        title: 'شعبه پایانه کالای عمومی و جزیره نگین بوشهر'
+                    }
+                    sso_workPlaceName.set('شعبه پایانه کالای عمومی و جزیره نگین بوشهر');
+                    sso_departmentName.set('شعبه پایانه کالای عمومی و جزیره نگین بوشهر');
                 }
                 topics = getTopics();
                 the_selected_topic.set(undefined);
