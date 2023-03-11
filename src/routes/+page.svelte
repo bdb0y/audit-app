@@ -36,11 +36,11 @@
                     sso_departmentName.set('مدیریت فورواردی و لجستیک');
                 }else if (personnelId === '968089') {
                     selected_unit = {
-                        id: 'za2GPmXPDq62OlvGwyhR',
-                        title: 'مدیریت معاملات و حقوقی'
+                        id: '84428q3gPXcmLdiZv6XW',
+                        title: 'مدیریت سرمایه گذاری و پیمان'
                     }
-                    sso_workPlaceName.set('مدیریت معاملات و حقوقی');
-                    sso_departmentName.set('مدیریت معاملات و حقوقی');
+                    sso_workPlaceName.set('مدیریت سرمایه گذاری و پیمان');
+                    sso_departmentName.set('مدیریت سرمایه گذاری و پیمان');
                 }else if (personnelId === 'bahadori') {
                     selected_unit = {
                         id: '3MT2LjsDrYa7h8QitLaf',
@@ -129,6 +129,7 @@
 
         if (req.ok) {
             grouped_items = groupByCategory(res);
+            console.log(grouped_items);
             // console.log(grouped_items)
             return res;
             // if (requests.length < 10)
